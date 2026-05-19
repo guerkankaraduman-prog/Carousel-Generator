@@ -1,733 +1,1341 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>Luxury Carousel Generator</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
-
-<style>
-
-:root{
-  --bg:#050505;
-  --card:#101010;
-  --border:rgba(255,255,255,.08);
-  --text:#ffffff;
-  --muted:rgba(255,255,255,.6);
-  --gold:#d4af37;
-  --glass:rgba(255,255,255,.04);
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Inter',sans-serif;
-  overflow-x:hidden;
-}
-
-/* ---------------- BACKGROUND ---------------- */
-
-.bg-glow{
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  background:
-    radial-gradient(circle at 20% 20%,rgba(212,175,55,.12),transparent 25%),
-    radial-gradient(circle at 80% 30%,rgba(255,255,255,.08),transparent 20%),
-    radial-gradient(circle at 50% 80%,rgba(212,175,55,.08),transparent 25%);
-}
-
-/* ---------------- HEADER ---------------- */
-
-header{
-  position:fixed;
-  top:0;
-  width:100%;
-  z-index:1000;
-  padding:24px 7%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-.logo{
-  font-size:1.2rem;
-  font-weight:800;
-  letter-spacing:2px;
-}
-
-.logo span{
-  color:var(--gold);
-}
-
-.nav{
-  display:flex;
-  gap:18px;
-}
-
-.nav a{
-  color:white;
-  text-decoration:none;
-  opacity:.7;
-  transition:.3s;
-  font-size:.95rem;
-}
-
-.nav a:hover{
-  opacity:1;
-  transform:translateY(-2px);
-}
-
-/* ---------------- HERO ---------------- */
-
-.hero{
-  min-height:100vh;
-  padding:140px 7% 80px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  align-items:center;
-  gap:60px;
-}
-
-.eyebrow{
-  color:var(--gold);
-  letter-spacing:5px;
-  font-size:.75rem;
-  margin-bottom:20px;
-}
-
-.hero h1{
-  font-size:clamp(4rem,8vw,8rem);
-  line-height:.9;
-  letter-spacing:-4px;
-}
-
-.hero h1 span{
-  font-family:'Cormorant Garamond',serif;
-  font-style:italic;
-  color:var(--gold);
-}
-
-.hero p{
-  margin-top:30px;
-  color:var(--muted);
-  line-height:1.8;
-  max-width:580px;
-}
-
-.hero-buttons{
-  display:flex;
-  gap:18px;
-  margin-top:40px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  border:none;
-  cursor:pointer;
-  padding:17px 30px;
-  border-radius:999px;
-  font-weight:600;
-  transition:.4s;
-}
-
-.btn-primary{
-  background:white;
-  color:black;
-}
-
-.btn-primary:hover{
-  transform:translateY(-4px);
-  box-shadow:0 20px 50px rgba(255,255,255,.18);
-}
-
-.btn-secondary{
-  background:rgba(255,255,255,.05);
-  color:white;
-  border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(10px);
-}
-
-.btn-secondary:hover{
-  background:rgba(255,255,255,.1);
-}
-
-.hero-right{
-  display:flex;
-  justify-content:center;
-}
-
-.hero-card{
-  width:100%;
-  max-width:600px;
-  border-radius:40px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.08);
-  background:var(--glass);
-  backdrop-filter:blur(20px);
-  box-shadow:
-    0 30px 90px rgba(0,0,0,.5),
-    inset 0 1px 1px rgba(255,255,255,.05);
-  transform:rotate(-3deg);
-  transition:.7s;
-}
-
-.hero-card:hover{
-  transform:rotate(-1deg) scale(1.02);
-}
-
-.hero-card img{
-  width:100%;
-  display:block;
-  object-fit:cover;
-}
-
-/* ---------------- SECTION ---------------- */
-
-.section{
-  padding:120px 7%;
-}
-
-.section-title{
-  font-size:clamp(2.5rem,5vw,4.5rem);
-  letter-spacing:-2px;
-  margin-bottom:60px;
-}
-
-/* ---------------- UPLOAD ---------------- */
-
-.upload-zone{
-  position:relative;
-  padding:90px 40px;
-  border-radius:40px;
-  background:var(--glass);
-  border:1px dashed rgba(255,255,255,.15);
-  text-align:center;
-  overflow:hidden;
-  transition:.4s;
-  backdrop-filter:blur(20px);
-}
-
-.upload-zone:hover{
-  transform:translateY(-6px);
-  border-color:rgba(255,255,255,.3);
-  box-shadow:0 30px 80px rgba(0,0,0,.45);
-}
-
-.upload-zone::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at top left,
-    rgba(212,175,55,.15),
-    transparent 30%);
-}
-
-.upload-icon{
-  font-size:4rem;
-  margin-bottom:20px;
-}
-
-.upload-zone h2{
-  font-size:2rem;
-  margin-bottom:10px;
-}
-
-.upload-zone p{
-  color:var(--muted);
-}
-
-.upload-btn{
-  display:inline-block;
-  margin-top:30px;
-  padding:16px 28px;
-  border-radius:999px;
-  background:white;
-  color:black;
-  font-weight:600;
-  cursor:pointer;
-  transition:.4s;
-}
-
-.upload-btn:hover{
-  transform:scale(1.05);
-}
-
-input[type=file]{
-  display:none;
-}
-
-/* ---------------- PREVIEW ---------------- */
-
-.preview-grid{
-  margin-top:50px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:25px;
-}
-
-.preview-item{
-  overflow:hidden;
-  border-radius:28px;
-  background:#111;
-  border:1px solid rgba(255,255,255,.08);
-  aspect-ratio:4/5;
-  position:relative;
-}
-
-.preview-item img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:1s;
-}
-
-.preview-item:hover img{
-  transform:scale(1.08);
-}
-
-/* ---------------- SLIDES ---------------- */
-
-.slides{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:35px;
-}
-
-.slide{
-  background:var(--glass);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:35px;
-  overflow:hidden;
-  transition:.5s;
-  backdrop-filter:blur(20px);
-}
-
-.slide:hover{
-  transform:translateY(-10px);
-  box-shadow:0 35px 90px rgba(0,0,0,.45);
-}
-
-.slide-image{
-  height:380px;
-  overflow:hidden;
-}
-
-.slide-image img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:1s;
-}
-
-.slide:hover img{
-  transform:scale(1.08);
-}
-
-.slide-content{
-  padding:30px;
-}
-
-.slide-tag{
-  color:var(--gold);
-  letter-spacing:3px;
-  font-size:.75rem;
-  margin-bottom:12px;
-}
-
-.slide-content h3{
-  font-size:2rem;
-  margin-bottom:16px;
-}
-
-.slide-content p{
-  color:var(--muted);
-  line-height:1.7;
-}
-
-/* ---------------- PRODUCT SHOWCASE ---------------- */
-
-.product-slide{
-  min-height:85vh;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  align-items:center;
-  gap:60px;
-  background:
-    radial-gradient(circle at top left,#1f1f1f,#070707 60%);
-  border-radius:50px;
-  padding:80px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.06);
-}
-
-.product-text h2{
-  font-size:clamp(3rem,7vw,7rem);
-  line-height:.9;
-  letter-spacing:-4px;
-}
-
-.product-text p{
-  margin-top:30px;
-  color:var(--muted);
-  line-height:1.8;
-  max-width:520px;
-}
-
-.product-image{
-  display:flex;
-  justify-content:center;
-}
-
-.product-image img{
-  width:100%;
-  max-width:520px;
-  object-fit:contain;
-  filter:drop-shadow(0 50px 100px rgba(0,0,0,.5));
-  transition:1s;
-}
-
-.product-slide:hover .product-image img{
-  transform:scale(1.08) rotate(-2deg);
-}
-
-/* ---------------- FOOTER ---------------- */
-
-footer{
-  padding:50px 7%;
-  text-align:center;
-  color:var(--muted);
-  border-top:1px solid rgba(255,255,255,.06);
-}
-
-/* ---------------- RESPONSIVE ---------------- */
-
-@media(max-width:980px){
-
-  .hero{
-    grid-template-columns:1fr;
-    text-align:center;
-  }
-
-  .hero-buttons{
-    justify-content:center;
-  }
-
-  .product-slide{
-    grid-template-columns:1fr;
-    text-align:center;
-    padding:60px 30px;
-  }
-
-  .product-text p{
-    margin-inline:auto;
-  }
-
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #00d4ff;
+            --accent-warm: #ff6b6b;
+            --text-light: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --success: #2ecc71;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* ====== HEADER ====== */
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 1rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--accent), #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ====== CONTROL PANEL ====== */
+        .control-panel {
+            background: rgba(22, 33, 62, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            animation: slideLeft 0.6s ease-out 0.1s both;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.2rem;
+            background: linear-gradient(180deg, var(--accent), var(--accent-warm));
+            border-radius: 2px;
+        }
+
+        /* ====== FORM ELEMENTS ====== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="number"],
+        input[type="color"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.85rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        input[type="number"]:focus,
+        input[type="color"]:focus,
+        select:focus,
+        textarea:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        input[type="color"] {
+            padding: 0.5rem;
+            cursor: pointer;
+            height: 45px;
+        }
+
+        /* ====== BUTTON STYLES ====== */
+        button {
+            padding: 0.85rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #00a8cc);
+            color: var(--primary);
+            width: 100%;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+            width: 100%;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-danger {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--accent-warm);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+            margin-left: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: var(--accent-warm);
+        }
+
+        .btn-small {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== LAYOUT GRID ====== */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .layout-option {
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .layout-option:hover {
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .layout-option.active {
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        /* ====== SLIDE LIST ====== */
+        .slide-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .slide-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .slide-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .slide-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .slide-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+        }
+
+        .slide-item.active {
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .slide-item-info {
+            text-align: left;
+        }
+
+        .slide-item-title {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .slide-item-number {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ====== PREVIEW AREA ====== */
+        .preview-area {
+            background: rgba(22, 33, 62, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            animation: slideRight 0.6s ease-out 0.2s both;
+        }
+
+        .preview-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ====== CAROUSEL ====== */
+        .carousel-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        /* Layout: Full Image */
+        .slide-full-image {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .slide-full-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), transparent);
+        }
+
+        /* Layout: Image Left */
+        .slide-image-left {
+            display: flex;
+            align-items: stretch;
+            position: relative;
+        }
+
+        .slide-image-left .slide-image {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide-image-left .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        /* Layout: Image Right */
+        .slide-image-right {
+            display: flex;
+            align-items: stretch;
+            flex-direction: row-reverse;
+            position: relative;
+        }
+
+        .slide-image-right .slide-image {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide-image-right .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        /* Layout: Text Only */
+        .slide-text-only {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .slide-text-only .slide-content {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Slide Content */
+        .slide-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .slide-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .slide-cta {
+            display: inline-block;
+            padding: 0.85rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .slide-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ====== CAROUSEL CONTROLS ====== */
+        .carousel-controls {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            width: 30px;
+            border-radius: 6px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* ====== STATS ====== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        /* ====== ANIMATIONS ====== */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ====== MODAL ====== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .control-panel {
+                max-height: 600px;
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slide-content h2 {
+                font-size: 1.8rem;
+            }
+
+            .slide-image-left,
+            .slide-image-right {
+                flex-direction: column;
+            }
+
+            .slide-image-left .slide-content,
+            .slide-image-right .slide-content {
+                padding: 2rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-<div class="bg-glow"></div>
-
-<header>
-
-  <div class="logo">
-    LUXE<span>.</span>GEN
-  </div>
-
-  <nav class="nav">
-    <a href="#home">Home</a>
-    <a href="#upload">Upload</a>
-    <a href="#slides">Slides</a>
-    <a href="#showcase">Showcase</a>
-  </nav>
-
-</header>
-
-<!-- HERO -->
-
-<section class="hero" id="home">
-
-  <div class="hero-left">
-
-    <div class="eyebrow">
-      HIGH END CAROUSEL EXPERIENCE
-    </div>
-
-    <h1>
-      Create<br>
-      <span>Luxury</span><br>
-      Slides
-    </h1>
-
-    <p>
-      Build cinematic product carousels with premium layouts,
-      elegant typography, ultra smooth transitions and modern
-      visual storytelling.
-    </p>
-
-    <div class="hero-buttons">
-
-      <button class="btn btn-primary">
-        Start Creating
-      </button>
-
-      <button class="btn btn-secondary">
-        Live Preview
-      </button>
-
-    </div>
-
-  </div>
-
-  <div class="hero-right">
-
-    <div class="hero-card">
-
-      <!-- FIXED IMAGE URL -->
-      <img
-        src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1400&auto=format&fit=crop"
-        alt="Luxury Fashion">
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- UPLOAD -->
-
-<section class="section" id="upload">
-
-  <h2 class="section-title">
-    Premium Upload Experience
-  </h2>
-
-  <div class="upload-zone">
-
-    <div class="upload-icon">
-      ✦
-    </div>
-
-    <h2>
-      Drop your visuals
-    </h2>
-
-    <p>
-      PNG, JPG, WEBP • Ultra HD supported
-    </p>
-
-    <label class="upload-btn">
-      Upload Images
-      <input type="file" id="imageUpload" multiple accept="image/*">
-    </label>
-
-  </div>
-
-  <!-- LIVE PREVIEW -->
-  <div class="preview-grid" id="previewGrid"></div>
-
-</section>
-
-<!-- SLIDES -->
-
-<section class="section" id="slides">
-
-  <h2 class="section-title">
-    Luxury Slide Types
-  </h2>
-
-  <div class="slides">
-
-    <div class="slide">
-
-      <div class="slide-image">
-        <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1200&auto=format&fit=crop" alt="">
-      </div>
-
-      <div class="slide-content">
-
-        <div class="slide-tag">
-          FASHION
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🎠 Carousel Generator Pro</h1>
+            <p>Erstelle beeindruckende Carousels mit professionellem Design</p>
         </div>
 
-        <h3>
-          Editorial Luxury
-        </h3>
+        <!-- CONTROL PANEL -->
+        <div class="control-panel">
+            <!-- Layout Section -->
+            <div class="section">
+                <div class="section-title">Layout</div>
+                <div class="layout-grid">
+                    <div class="layout-option active" data-layout="full-image">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🖼️</div>
+                        Full Image
+                    </div>
+                    <div class="layout-option" data-layout="image-left">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">◀️</div>
+                        Image Left
+                    </div>
+                    <div class="layout-option" data-layout="image-right">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">▶️</div>
+                        Image Right
+                    </div>
+                    <div class="layout-option" data-layout="text-only">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📝</div>
+                        Text Only
+                    </div>
+                </div>
+            </div>
 
-        <p>
-          Inspired by Vogue-style layouts with cinematic spacing
-          and elegant visual balance.
-        </p>
+            <!-- Farben Section -->
+            <div class="section">
+                <div class="section-title">Farben & Stil</div>
+                <div class="form-group">
+                    <label>Hintergrund Farbe</label>
+                    <input type="color" id="bgColor" value="#1a1a2e">
+                </div>
+                <div class="form-group">
+                    <label>Text Farbe</label>
+                    <input type="color" id="textColor" value="#ecf0f1">
+                </div>
+                <div class="form-group">
+                    <label>Button Farbe</label>
+                    <input type="color" id="btnColor" value="#00d4ff">
+                </div>
+                <div class="form-group">
+                    <label>Overlay Opazität</label>
+                    <input type="number" id="overlayOpacity" min="0" max="100" value="40" step="10">
+                    <small style="color: var(--text-muted); margin-top: 0.3rem; display: block;">0-100%</small>
+                </div>
+            </div>
 
-      </div>
+            <!-- Slide Content Section -->
+            <div class="section">
+                <div class="section-title">Folie Bearbeiten</div>
+                <div class="form-group">
+                    <label>Titel</label>
+                    <input type="text" id="slideTitle" placeholder="Folientitel eingeben...">
+                </div>
+                <div class="form-group">
+                    <label>Beschreibung</label>
+                    <textarea id="slideDescription" placeholder="Folienbeschreibung eingeben..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Button Text</label>
+                    <input type="text" id="slideBtnText" placeholder="z.B. 'Mehr erfahren'">
+                </div>
+                <div class="form-group">
+                    <label>Button Link</label>
+                    <input type="url" id="slideBtnLink" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>Bild hochladen</label>
+                    <input type="file" id="slideImage" accept="image/*">
+                    <small style="color: var(--text-muted); margin-top: 0.3rem; display: block;">JPG, PNG, WebP</small>
+                </div>
+            </div>
 
-    </div>
+            <!-- Slides Section -->
+            <div class="section">
+                <div class="section-title">Folien</div>
+                <button class="btn-primary btn-small" onclick="addSlide()">+ Neue Folie</button>
+                <div class="slide-list" id="slideList"></div>
+            </div>
 
-    <div class="slide">
-
-      <div class="slide-image">
-        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop" alt="">
-      </div>
-
-      <div class="slide-content">
-
-        <div class="slide-tag">
-          PRODUCT
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalSlides">1</div>
+                    <div class="stat-label">Folien</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="currentSlide">1</div>
+                    <div class="stat-label">Aktuelle</div>
+                </div>
+            </div>
         </div>
 
-        <h3>
-          Product Showcase
-        </h3>
+        <!-- PREVIEW AREA -->
+        <div class="preview-area">
+            <div class="preview-title">Live Preview</div>
+            <div class="carousel-wrapper">
+                <div class="carousel" id="carousel">
+                    <!-- Slides werden hier eingefügt -->
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-btn" onclick="prevSlide()">❮</button>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                    <button class="carousel-btn" onclick="nextSlide()">❯</button>
+                </div>
+            </div>
 
-        <p>
-          Large imagery with floating shadows inspired by
-          Apple campaign visuals.
-        </p>
-
-      </div>
-
-    </div>
-
-    <div class="slide">
-
-      <div class="slide-image">
-        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop" alt="">
-      </div>
-
-      <div class="slide-content">
-
-        <div class="slide-tag">
-          CINEMATIC
+            <!-- Export Section -->
+            <div class="section" style="background: rgba(0, 212, 255, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.2);">
+                <div class="section-title" style="border: none; margin-bottom: 1rem;">Export</div>
+                <button class="btn-primary btn-small" onclick="downloadCarousel()">📥 Als HTML herunterladen</button>
+                <button class="btn-secondary btn-small" onclick="copyToClipboard()">📋 Code kopieren</button>
+            </div>
         </div>
-
-        <h3>
-          Modern Aesthetic
-        </h3>
-
-        <p>
-          Premium glassmorphism combined with cinematic
-          photography and smooth luxury motion.
-        </p>
-
-      </div>
-
     </div>
 
-  </div>
+    <script>
+        // ====== STATE MANAGEMENT ======
+        let slides = [
+            {
+                id: 1,
+                title: 'Willkommen zu unserem Carousel',
+                description: 'Erstelle wunderschöne Carousels mit dieser professionellen Generator-App',
+                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2300d4ff;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ff00ff;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="1200" height="800"/%3E%3C/svg%3E',
+                btnText: 'Jetzt starten',
+                btnLink: '#',
+            }
+        ];
 
-</section>
+        let currentLayout = 'full-image';
+        let currentSlideId = 1;
+        let nextSlideId = 2;
 
-<!-- PRODUCT SHOWCASE -->
+        // ====== INITIALIZATION ======
+        function init() {
+            renderSlideList();
+            renderCarousel();
+            loadSlideData();
+        }
 
-<section class="section" id="showcase">
+        // ====== SLIDE MANAGEMENT ======
+        function addSlide() {
+            const newSlide = {
+                id: nextSlideId++,
+                title: `Folie ${nextSlideId}`,
+                description: 'Folienbeschreibung eingeben',
+                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23ff6b6b;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ffa500;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad2)" width="1200" height="800"/%3E%3C/svg%3E',
+                btnText: '',
+                btnLink: '',
+            };
+            slides.push(newSlide);
+            currentSlideId = newSlide.id;
+            renderSlideList();
+            renderCarousel();
+            loadSlideData();
+            updateStats();
+        }
 
-  <div class="product-slide">
+        function deleteSlide(id) {
+            if (slides.length <= 1) {
+                alert('Du musst mindestens eine Folie haben!');
+                return;
+            }
+            slides = slides.filter(s => s.id !== id);
+            if (currentSlideId === id) {
+                currentSlideId = slides[0].id;
+            }
+            renderSlideList();
+            renderCarousel();
+            loadSlideData();
+            updateStats();
+        }
 
-    <div class="product-text">
+        function selectSlide(id) {
+            currentSlideId = id;
+            renderSlideList();
+            loadSlideData();
+        }
 
-      <div class="eyebrow">
-        NEW COLLECTION
-      </div>
+        // ====== DATA LOADING ======
+        function loadSlideData() {
+            const slide = slides.find(s => s.id === currentSlideId);
+            if (slide) {
+                document.getElementById('slideTitle').value = slide.title || '';
+                document.getElementById('slideDescription').value = slide.description || '';
+                document.getElementById('slideBtnText').value = slide.btnText || '';
+                document.getElementById('slideBtnLink').value = slide.btnLink || '';
+            }
+        }
 
-      <h2>
-        Minimal<br>
-        Luxury
-      </h2>
+        function saveSlideData() {
+            const slide = slides.find(s => s.id === currentSlideId);
+            if (slide) {
+                slide.title = document.getElementById('slideTitle').value;
+                slide.description = document.getElementById('slideDescription').value;
+                slide.btnText = document.getElementById('slideBtnText').value;
+                slide.btnLink = document.getElementById('slideBtnLink').value;
+                renderCarousel();
+            }
+        }
 
-      <p>
-        Crafted for modern aesthetics and premium digital
-        presentation with ultra clean visual hierarchy.
-      </p>
+        // ====== IMAGE HANDLING ======
+        document.getElementById('slideImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const slide = slides.find(s => s.id === currentSlideId);
+                    if (slide) {
+                        slide.image = event.target.result;
+                        renderCarousel();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-      <div class="hero-buttons">
+        // ====== COLOR HANDLING ======
+        document.getElementById('bgColor').addEventListener('change', updateCarouselColors);
+        document.getElementById('textColor').addEventListener('change', updateCarouselColors);
+        document.getElementById('btnColor').addEventListener('change', updateCarouselColors);
+        document.getElementById('overlayOpacity').addEventListener('change', updateCarouselColors);
 
-        <button class="btn btn-primary">
-          Explore
-        </button>
+        function updateCarouselColors() {
+            renderCarousel();
+        }
 
-        <button class="btn btn-secondary">
-          Watch Demo
-        </button>
+        // ====== LAYOUT SELECTION ======
+        document.querySelectorAll('.layout-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                currentLayout = this.getAttribute('data-layout');
+                renderCarousel();
+            });
+        });
 
-      </div>
+        // ====== INPUT LISTENERS ======
+        document.getElementById('slideTitle').addEventListener('change', saveSlideData);
+        document.getElementById('slideDescription').addEventListener('change', saveSlideData);
+        document.getElementById('slideBtnText').addEventListener('change', saveSlideData);
+        document.getElementById('slideBtnLink').addEventListener('change', saveSlideData);
 
+        // ====== RENDERING ======
+        function renderSlideList() {
+            const slideList = document.getElementById('slideList');
+            slideList.innerHTML = '';
+            slides.forEach((slide, index) => {
+                const slideItem = document.createElement('div');
+                slideItem.className = `slide-item ${slide.id === currentSlideId ? 'active' : ''}`;
+                slideItem.innerHTML = `
+                    <div class="slide-item-info" onclick="selectSlide(${slide.id})">
+                        <div class="slide-item-title">${slide.title || 'Ohne Titel'}</div>
+                        <div class="slide-item-number">Folie ${index + 1}</div>
+                    </div>
+                    <button class="btn-danger" onclick="deleteSlide(${slide.id})">✕</button>
+                `;
+                slideList.appendChild(slideItem);
+            });
+            updateStats();
+        }
+
+        function renderCarousel() {
+            const carousel = document.getElementById('carousel');
+            const dotsContainer = document.getElementById('carouselDots');
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            const btnColor = document.getElementById('btnColor').value;
+            const overlayOpacity = document.getElementById('overlayOpacity').value / 100;
+
+            carousel.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            slides.forEach((slide, index) => {
+                // Create slide element
+                const slideEl = document.createElement('div');
+                slideEl.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+
+                // Apply layout
+                let layoutClass = `slide-${currentLayout}`;
+                slideEl.classList.add(layoutClass);
+
+                // Build content
+                let slideHTML = '';
+
+                if (currentLayout === 'full-image') {
+                    slideHTML = `
+                        <div class="slide-full-image" style="background-image: url('${slide.image}')">
+                            <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
+                                <h2>${slide.title}</h2>
+                                <p>${slide.description}</p>
+                                ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
+                            </div>
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
+                        </div>
+                    `;
+                } else if (currentLayout === 'image-left' || currentLayout === 'image-right') {
+                    slideHTML = `
+                        <div class="slide-image" style="background-image: url('${slide.image}');"></div>
+                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
+                            <h2>${slide.title}</h2>
+                            <p>${slide.description}</p>
+                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
+                        </div>
+                    `;
+                } else if (currentLayout === 'text-only') {
+                    slideHTML = `
+                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
+                            <h2>${slide.title}</h2>
+                            <p>${slide.description}</p>
+                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
+                        </div>
+                    `;
+                }
+
+                slideEl.innerHTML = slideHTML;
+                carousel.appendChild(slideEl);
+
+                // Create dot
+                const dot = document.createElement('div');
+                dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalSlides').textContent = slides.length;
+            const currentIndex = slides.findIndex(s => s.id === currentSlideId);
+            document.getElementById('currentSlide').textContent = currentIndex + 1;
+        }
+
+        // ====== CAROUSEL NAVIGATION ======
+        let currentIndex = 0;
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateCarouselDisplay();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateCarouselDisplay();
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            updateCarouselDisplay();
+        }
+
+        function updateCarouselDisplay() {
+            const slideElements = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.dot');
+
+            slideElements.forEach((slide, index) => {
+                slide.classList.remove('active');
+                dots[index].classList.remove('active');
+            });
+
+            slideElements[currentIndex].classList.add('active');
+            dots[currentIndex].classList.add('active');
+        }
+
+        // ====== EXPORT FUNCTIONS ======
+        function downloadCarousel() {
+            const html = generateCarouselHTML();
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'carousel.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function copyToClipboard() {
+            const html = generateCarouselHTML();
+            navigator.clipboard.writeText(html).then(() => {
+                alert('Code in Zwischenablage kopiert!');
+            });
+        }
+
+        function generateCarouselHTML() {
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            const btnColor = document.getElementById('btnColor').value;
+            const overlayOpacity = document.getElementById('overlayOpacity').value / 100;
+
+            let slidesHTML = slides.map((slide, index) => {
+                let slideHTML = '';
+               
+                if (currentLayout === 'full-image') {
+                    slideHTML = `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                        <div class="slide-full-image" style="background-image: url('${slide.image}')">
+                            <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
+                                <h2>${slide.title}</h2>
+                                <p>${slide.description}</p>
+                                ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
+                            </div>
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
+                        </div>
+                    </div>`;
+                } else if (currentLayout === 'image-left' || currentLayout === 'image-right') {
+                    slideHTML = `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                        <div class="slide-image" style="background-image: url('${slide.image}'); flex: 1;"></div>
+                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
+                            <h2>${slide.title}</h2>
+                            <p>${slide.description}</p>
+                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; width: fit-content;">${slide.btnText}</a>` : ''}
+                        </div>
+                    </div>`;
+                } else if (currentLayout === 'text-only') {
+                    slideHTML = `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; width: 100%; text-align: center;">
+                            <h2>${slide.title}</h2>
+                            <p>${slide.description}</p>
+                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600;">${slide.btnText}</a>` : ''}
+                        </div>
+                    </div>`;
+                }
+
+                return slideHTML;
+            }).join('');
+
+            const dotsHTML = slides.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
+
+            return `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .carousel-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            aspect-ratio: 16 / 9;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .carousel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .slide-full-image {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide-image {
+            background-size: cover;
+            background-position: center;
+        }
+        .slide-content {
+            z-index: 2;
+        }
+        .slide-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .slide-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+        .slide-cta {
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+        }
+        .slide-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        .carousel-controls {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .carousel-dots {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .dot.active {
+            background: #00d4ff;
+            width: 30px;
+            border-radius: 6px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-wrapper">
+        <div class="carousel" id="carousel">
+            ${slidesHTML}
+        </div>
+        <div class="carousel-controls">
+            <button class="carousel-btn" onclick="prevSlide()">❮</button>
+            <div class="carousel-dots" id="dots">
+                ${dotsHTML}
+            </div>
+            <button class="carousel-btn" onclick="nextSlide()">❯</button>
+        </div>
     </div>
 
-    <div class="product-image">
+    <script>
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
 
-      <img
-        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1400&auto=format&fit=crop"
-        alt="Luxury Product">
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateDisplay();
+        }
 
-    </div>
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateDisplay();
+        }
 
-  </div>
+        function goToSlide(index) {
+            currentIndex = index;
+            updateDisplay();
+        }
 
-</section>
+        function updateDisplay() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                document.querySelectorAll('.dot')[index].classList.remove('active');
+            });
+            slides[currentIndex].classList.add('active');
+            document.querySelectorAll('.dot')[currentIndex].classList.add('active');
+        }
 
-<footer>
-  Luxury Carousel Generator — High End UI Experience
-</footer>
+        // Auto-advance every 5 seconds (optional)
+        // setInterval(nextSlide, 5000);
+    </script>
+</body>
+</html>`;
+        }
 
-<script>
-
-/* ---------------- IMAGE UPLOAD PREVIEW ---------------- */
-
-const uploadInput = document.getElementById("imageUpload");
-const previewGrid = document.getElementById("previewGrid");
-
-uploadInput.addEventListener("change", function(){
-
-  previewGrid.innerHTML = "";
-
-  const files = Array.from(this.files);
-
-  files.forEach(file => {
-
-    if(!file.type.startsWith("image/")) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-
-      const item = document.createElement("div");
-      item.className = "preview-item";
-
-      item.innerHTML = `
-        <img src="${e.target.result}" alt="">
-      `;
-
-      previewGrid.appendChild(item);
-
-    };
-
-    reader.readAsDataURL(file);
-
-  });
-
-});
-
-</script>
-
+        // Initialize
+        init();
+    </script>
 </body>
 </html>
