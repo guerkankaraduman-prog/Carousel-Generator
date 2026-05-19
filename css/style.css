@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f1a;
+  font-family: Arial;
+  background: #0d0d14;
   color: white;
 }
 
@@ -21,29 +21,36 @@ textarea {
 button {
   padding: 10px 16px;
   cursor: pointer;
-  margin-bottom: 20px;
 }
 
 #carousel {
   display: grid;
   gap: 12px;
+  margin-top: 20px;
 }
 
 .slide {
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #1c1c2d;
-  white-space: pre-wrap;
+  position: relative;
 }
 
-.slide.hook {
-  border-left: 4px solid #00ffcc;
+.slide .text {
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.slide.value {
-  border-left: 4px solid #4da3ff;
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 10px;
+  padding: 4px 8px;
+  background: #333;
+  border-radius: 6px;
 }
 
-.slide.cta {
-  border-left: 4px solid #ffcc00;
-}
+.slide.hook { border-left: 4px solid #00ffcc; }
+.slide.value { border-left: 4px solid #4da3ff; }
+.slide.cta { border-left: 4px solid #ffcc00; }
