@@ -1104,38 +1104,49 @@
             const btnColor = document.getElementById('btnColor').value;
             const overlayOpacity = document.getElementById('overlayOpacity').value / 100;
 
+            // Generate Pinterest Pin Images (1000x1500px optimal size)
+            const pinterestPins = slides.map((slide, index) => {
+                return `
+    <img src="${slide.image}" alt="${slide.title}" class="pinterest-pin" data-pin="${index}">`;
+            }).join('');
+
+            // Generate Pinterest Descriptions
+            const pinDescriptions = slides.map((slide, index) => {
+                return `${slide.title} - ${slide.description}`.substring(0, 500);
+            });
+
             let slidesHTML = slides.map((slide, index) => {
                 let slideHTML = '';
                
                 if (currentLayout === 'full-image') {
                     slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
                         <div class="slide-full-image" style="background-image: url('${slide.image}')">
                             <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
                                 <h2>${slide.title}</h2>
                                 <p>${slide.description}</p>
-                                ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
+                                ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};" data-pin-id="${index}">${slide.btnText}</a>` : ''}
                             </div>
                             <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
                         </div>
                     </div>`;
                 } else if (currentLayout === 'image-left' || currentLayout === 'image-right') {
                     slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
                         <div class="slide-image" style="background-image: url('${slide.image}'); flex: 1;"></div>
                         <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
                             <h2>${slide.title}</h2>
                             <p>${slide.description}</p>
-                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; width: fit-content;">${slide.btnText}</a>` : ''}
+                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; width: fit-content;" data-pin-id="${index}">${slide.btnText}</a>` : ''}
                         </div>
                     </div>`;
                 } else if (currentLayout === 'text-only') {
                     slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
                         <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; width: 100%; text-align: center;">
                             <h2>${slide.title}</h2>
                             <p>${slide.description}</p>
-                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600;">${slide.btnText}</a>` : ''}
+                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600;" data-pin-id="${index}">${slide.btnText}</a>` : ''}
                         </div>
                     </div>`;
                 }
@@ -1145,17 +1156,61 @@
 
             const dotsHTML = slides.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
 
+            const firstSlideTitle = slides[0]?.title || 'Carousel';
+            const firstSlideDesc = slides[0]?.description || 'Erstellt mit Carousel Generator Pro';
+            const pinPageUrl = typeof window !== 'undefined' ? window.location.href : 'https://example.com';
+
             return `<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carousel</title>
+    <meta name="description" content="${firstSlideDesc.substring(0, 155)}">
+    <meta name="keywords" content="carousel, slider, interactive, presentation">
+   
+    <!-- Pinterest Rich Pins Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="${firstSlideTitle}">
+    <meta property="og:description" content="${firstSlideDesc}">
+    <meta property="og:image" content="${slides[0]?.image || ''}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="628">
+    <meta property="og:url" content="${pinPageUrl}">
+   
+    <!-- Pinterest Specific -->
+    <meta name="pinterest-rich-pin" content="true">
+    <meta name="pinterest" content="nohovernotes">
+    <meta property="pinterest:media" content="${slides[0]?.image || ''}">
+    <meta property="pinterest:description" content="${firstSlideDesc}">
+   
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${firstSlideTitle}">
+    <meta name="twitter:description" content="${firstSlideDesc}">
+    <meta name="twitter:image" content="${slides[0]?.image || ''}">
+   
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "${firstSlideTitle}",
+        "description": "${firstSlideDesc}",
+        "image": "${slides[0]?.image || ''}",
+        "datePublished": "${new Date().toISOString()}"
+    }
+    </script>
+   
+    <title>${firstSlideTitle} - Carousel</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1175,6 +1230,7 @@
             overflow: hidden;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         .carousel {
             width: 100%;
@@ -1231,6 +1287,7 @@
             transition: all 0.3s ease;
             border: none;
             font-size: 1rem;
+            cursor: pointer;
         }
         .slide-cta:hover {
             transform: translateY(-2px);
@@ -1283,10 +1340,75 @@
             background: rgba(0, 212, 255, 0.4);
             transform: scale(1.1);
         }
+        .pinterest-pin {
+            display: none;
+        }
+        .share-buttons {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 20;
+            display: flex;
+            gap: 0.8rem;
+        }
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .share-btn:hover {
+            background: rgba(229, 0, 35, 0.8);
+            border-color: rgba(229, 0, 35, 1);
+        }
+        @media (max-width: 768px) {
+            .share-buttons {
+                flex-direction: column;
+            }
+            .carousel-wrapper {
+                aspect-ratio: 9 / 16;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Pinterest Hidden Pins -->
+    <div style="display: none;">
+        ${pinterestPins}
+    </div>
+
     <div class="carousel-wrapper">
+        <!-- Share Buttons -->
+        <div class="share-buttons">
+            <a href="https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(pinPageUrl)}&media=${encodeURIComponent(slides[0]?.image || '')}&description=${encodeURIComponent(pinDescriptions[0] || '')}"
+               class="share-btn"
+               title="Bei Pinterest teilen"
+               onclick="window.open(this.href, 'pinterest', 'width=750,height=600'); return false;">
+                📌
+            </a>
+            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(pinPageUrl)}&text=${encodeURIComponent(firstSlideTitle)}"
+               class="share-btn"
+               title="Bei Twitter teilen"
+               onclick="window.open(this.href, 'twitter', 'width=550,height=420'); return false;">
+                𝕏
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pinPageUrl)}"
+               class="share-btn"
+               title="Bei Facebook teilen"
+               onclick="window.open(this.href, 'facebook', 'width=550,height=420'); return false;">
+                f
+            </a>
+        </div>
+
         <div class="carousel" id="carousel">
             ${slidesHTML}
         </div>
@@ -1302,6 +1424,7 @@
     <script>
         let currentIndex = 0;
         const slides = document.querySelectorAll('.carousel-slide');
+        const pinDescriptions = ${JSON.stringify(pinDescriptions)};
 
         function nextSlide() {
             currentIndex = (currentIndex + 1) % slides.length;
@@ -1325,10 +1448,26 @@
             });
             slides[currentIndex].classList.add('active');
             document.querySelectorAll('.dot')[currentIndex].classList.add('active');
+           
+            // Update Pinterest share button with current slide
+            updatePinterestButton();
         }
 
-        // Auto-advance every 5 seconds (optional)
-        // setInterval(nextSlide, 5000);
+        function updatePinterestButton() {
+            const pinterestBtn = document.querySelector('a[href*="pinterest.com"]');
+            if (pinterestBtn) {
+                const currentImage = document.querySelector(\`.carousel-slide[\`data-slide-index="\${currentIndex}"]\`);
+                const imageUrl = window.location.href;
+                const description = pinDescriptions[currentIndex] || 'Wunderbar! Sieh dir dieses Carousel an!';
+                pinterestBtn.href = \`https://www.pinterest.com/pin/create/button/?url=\${encodeURIComponent(imageUrl)}&description=\${encodeURIComponent(description)}\`;
+            }
+        }
+
+        // Auto-advance every 8 seconds (optional - entfernen für statische Version)
+        // setInterval(nextSlide, 8000);
+
+        // Initialize Pinterest button
+        updatePinterestButton();
     </script>
 </body>
 </html>`;
