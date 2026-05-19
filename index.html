@@ -171,6 +171,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ecl:hover{background:var(--surface2);color:var(--text)}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--surface2);border:0.5px solid var(--border-md);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:200;transition:transform .25s ease;pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
+/* TEMPLATE MODAL */
+.tov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(6px)}
+.tm{background:var(--surface);border:0.5px solid var(--border-md);border-radius:16px;padding:28px 32px;width:720px;max-width:94vw;max-height:88vh;display:flex;flex-direction:column;gap:0}
+.tm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.tm-head h2{font-family:'Playfair Display',serif;font-size:20px}
+.tm-head p{font-size:12px;color:var(--text-3);margin-top:3px}
+.tm-close{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:20px;padding:4px;border-radius:6px;transition:all .15s}
+.tm-close:hover{color:var(--text);background:var(--surface2)}
+.tm-filters{display:flex;gap:6px;margin:14px 0;flex-wrap:wrap}
+.tf{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer;transition:all .15s}
+.tf:hover{border-color:var(--border-md);color:var(--text-2)}
+.tf.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow-y:auto;padding-right:4px;flex:1}
+.tm-grid::-webkit-scrollbar{width:3px}
+.tm-grid::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:2px}
+.tcard{border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .2s;background:var(--surface2)}
+.tcard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.tcard-preview{height:90px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.tcard-slides{display:flex;gap:4px;padding:8px;width:100%}
+.tcard-slide{flex:1;height:74px;border-radius:5px;overflow:hidden;display:flex;align-items:flex-end;padding:6px;font-size:5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.tcard-body{padding:10px 12px 12px}
+.tcard-niche{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;opacity:.5}
+.tcard-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.tcard-desc{font-size:11px;color:var(--text-3);line-height:1.4}
+.tcard-slides-count{font-size:10px;color:var(--text-3);margin-top:6px}
+.tcard-tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:500;margin-right:3px;margin-top:4px}
 </style>
 </head>
 <body>
@@ -180,6 +206,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="aff-badge">Affiliate Ready</div>
   <div class="topbar-sep"></div>
   <span class="topbar-count" id="top-count"></span>
+  <button class="topbar-btn" onclick="openTemplates()">✦ Templates</button>
   <button class="topbar-btn" onclick="openExport()">↗ Exportieren</button>
 </div>
 
@@ -227,6 +254,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </button>
     </div>
     <button class="ecl" onclick="closeExport()">Abbrechen</button>
+  </div>
+</div>
+
+<!-- TEMPLATE MODAL -->
+<div class="tov" id="tov" style="display:none" onclick="closeTpl(event)">
+  <div class="tm">
+    <div class="tm-head">
+      <div>
+        <h2>✦ Nischen-Templates</h2>
+        <p>Fertige Carousel-Sets — einfach laden und Texte & Links anpassen</p>
+      </div>
+      <button class="tm-close" onclick="closeTpl()">✕</button>
+    </div>
+    <div class="tm-filters" id="tm-filters"></div>
+    <div class="tm-grid" id="tm-grid"></div>
   </div>
 </div>
 
@@ -532,6 +574,119 @@ function dl(name,type,content){
 function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ============================================================
+   TEMPLATES
+   ============================================================ */
+const TEMPLATES=[
+  {id:'tech-headphones',niche:'Tech & Gadgets',name:'Kopfhörer-Test',desc:'Produkttest + Empfehlung mit Preisvergleich',color:'slate',tags:['Amazon','Test'],slides:[
+    {type:'cover',color:'slate',title:'Die besten Kopfhörer 2025',subtitle:'Unser ehrlicher Test',eyebrow:'Tech Review',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'slate',title:'Sony WH-1000XM5',subtitle:'279,00 €',eyebrow:'Sony',body:'UVP 349 €',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon kaufen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'product',color:'slate',title:'Bose QuietComfort 45',subtitle:'249,00 €',eyebrow:'Bose',body:'UVP 329 €',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon kaufen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'stat',color:'slate',title:'40h',eyebrow:'Akkulaufzeit',body:'Sony hält mit ANC bis zu 40 Stunden durch — Branchenrekord in dieser Preisklasse.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'slate',title:'Worauf du achten solltest',eyebrow:'Kaufratgeber',body:'ANC-Qualität & Stärke\nAkkulaufzeit (min. 20h)\nTragekomfort bei langen Sessions\nApp & EQ-Anpassung\nMikrofonqualität für Calls',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'slate',title:'Alle Links in der Bio',eyebrow:'@deinHandle',body:'Täglich neue Tech-Deals & Reviews.',subtitle:'Link in Bio ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'tech-laptop',niche:'Tech & Gadgets',name:'Laptop unter 1000€',desc:'Top-3 Laptops mit Preisvergleich & Specs',color:'indigo',tags:['Amazon','Vergleich'],slides:[
+    {type:'cover',color:'indigo',title:'Top 3 Laptops unter 1000 €',subtitle:'Unser Vergleich 2025',eyebrow:'Laptop Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'indigo',title:'MacBook Air M2',subtitle:'999,00 €',eyebrow:'Apple',body:'Refurbished ab 799 €',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Zum Angebot',showAffBar:true,ctaText:'Jetzt ansehen →'},
+    {type:'product',color:'indigo',title:'ASUS ZenBook 14',subtitle:'749,00 €',eyebrow:'ASUS',body:'UVP 899 €',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon kaufen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'stat',color:'indigo',title:'18h',eyebrow:'Akku MacBook Air',body:'Mit dem M2-Chip hält der MacBook Air länger als jeder Windows-Konkurrent in dieser Preisklasse.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'content',color:'indigo',title:'Für wen lohnt sich welches?',eyebrow:'Empfehlung',body:'MacBook: Studium, Kreative, Apple-Ökosystem.\nZenBook: Office, Business, Windows-Nutzer.\nLenovo IdeaPad: Budget, Einsteiger, Schule.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'indigo',title:'Alle Preisvergleiche in der Bio',eyebrow:'@deinHandle',body:'Wöchentliche Tech-Deals & Empfehlungen.',subtitle:'Link in Bio ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'fitness-supplements',niche:'Fitness & Health',name:'Supplement-Guide',desc:'Top-Supps mit Wirkung, Dosierung & Links',color:'forest',tags:['Amazon','Ernährung'],slides:[
+    {type:'cover',color:'forest',title:'Die 5 Supplements, die wirklich wirken',subtitle:'Evidenzbasiert & ehrlich',eyebrow:'Fitness Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'forest',title:'Creatin Monohydrat',subtitle:'18,90 €',eyebrow:'Bulk Powders',body:'500g — günstigster pro Portion',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Jetzt kaufen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'content',color:'forest',title:'Warum Creatin #1 ist',eyebrow:'Wissenschaft',body:'Über 700 Studien belegen: Creatin steigert Kraft, Ausdauer und Muskelwachstum. Kein anderes Supplement hat diese Datenlage.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'forest',title:'Whey Protein Isolat',subtitle:'34,90 €',eyebrow:'Myprotein',body:'1kg — 90% Proteingehalt',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Jetzt kaufen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'stat',color:'forest',title:'2g/kg',eyebrow:'Optimale Proteinmenge',body:'Pro Kilogramm Körpergewicht täglich — die wissenschaftliche Empfehlung für Muskelaufbau.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'forest',title:'Top 5 im Überblick',eyebrow:'Ranking',body:'Creatin Monohydrat\nWhey Protein Isolat\nVitamin D3 + K2\nOmega-3 Fischöl\nMagnesium Bisglycinate',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'forest',title:'Alle Links & Codes in der Bio',eyebrow:'@deinHandle',body:'10% Rabatt mit Code FITNESS10',subtitle:'Code sichern ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'fitness-homegym',niche:'Fitness & Health',name:'Home-Gym Setup',desc:'Bestes Equipment für zuhause unter 500€',color:'ember',tags:['Amazon','Home Gym'],slides:[
+    {type:'cover',color:'ember',title:'Das perfekte Home Gym unter 500 €',subtitle:'Kein Fitnessstudio mehr nötig',eyebrow:'Home Gym Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'ember',title:'Verstellbare Kurzhanteln',subtitle:'89,90 €',eyebrow:'Bowflex',body:'2,5–24 kg in einem Set',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon ansehen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'product',color:'ember',title:'Klimmzugstange (Türrahmen)',subtitle:'24,99 €',eyebrow:'Sportsroyals',body:'Bis 150 kg — ohne Schrauben',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Jetzt kaufen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'stat',color:'ember',title:'487 €',eyebrow:'Gesamtbudget',body:'Kurzhanteln, Klimmzugstange, Widerstandsbänder, Matte — reicht für 90% aller Workouts.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'ember',title:'Deine Einkaufsliste',eyebrow:'Komplettpaket',body:'Verstellbare Kurzhanteln\nKlimmzugstange\nWiderstandsbänder-Set\nSportmatte 180x60cm\nDip-Stangen (optional)',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'ember',title:'Alle Links in der Bio',eyebrow:'@deinHandle',body:'Spare bis zu 30% mit unseren Deals.',subtitle:'Jetzt sparen ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'beauty-skincare',niche:'Beauty & Lifestyle',name:'Skincare Routine',desc:'Morning & Evening Routine mit Produktempfehlungen',color:'rose',tags:['Amazon','Routine'],slides:[
+    {type:'cover',color:'rose',title:'Die Skincare Routine, die wirklich wirkt',subtitle:'Morgen & Abend — günstig & effektiv',eyebrow:'Beauty Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'rose',title:'Morgenroutine (5 Min.)',eyebrow:'Schritt für Schritt',body:'Reinigung mit mildem Cleanser\nVitamin C Serum\nLeichte Feuchtigkeitscreme\nSPF 50 Sonnenschutz',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'rose',title:'CeraVe Feuchtigkeitscreme',subtitle:'12,99 €',eyebrow:'CeraVe',body:'236ml — Derma empfohlen',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon kaufen',showAffBar:true,ctaText:'Jetzt kaufen →'},
+    {type:'product',color:'rose',title:'La Roche Posay SPF 50+',subtitle:'15,90 €',eyebrow:'La Roche-Posay',body:'50ml — unsichtbar & leicht',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Jetzt kaufen',showAffBar:true,ctaText:'Zum Angebot →'},
+    {type:'content',color:'rose',title:'Der Fehler, den fast alle machen',eyebrow:'Pro-Tipp',body:'Zu viele Produkte auf einmal. Starte mit 3 Basics: Cleanser, Feuchtigkeitspflege, SPF. Alles andere kommt später.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'quote',color:'rose',title:'Deine Haut braucht keine 15 Produkte. Sie braucht die richtigen 3.',eyebrow:'— Hautärztliche Empfehlung',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'rose',title:'Alle Produkte in der Bio verlinkt',eyebrow:'@deinHandle',body:'Neue Routine-Guides jeden Dienstag.',subtitle:'Folgen & sparen ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'home-kitchen',niche:'Home & Living',name:'Küchen-Gadgets',desc:'Die besten Küchen-Gadgets die Zeit sparen',color:'ivory',tags:['Amazon','Küche'],slides:[
+    {type:'cover',color:'ivory',title:'7 Küchen-Gadgets, die ich nie mehr missen will',subtitle:'Ehrliche Empfehlungen unter 50 €',eyebrow:'Home Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'ivory',title:'Instant Pot Duo 5,7L',subtitle:'79,95 €',eyebrow:'Instant Pot',body:'War: 129 €',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon ansehen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'content',color:'ivory',title:'Warum der Instant Pot unser Favorit ist',eyebrow:'Testbericht',body:'7 Geräte in einem: Schnellkochtopf, Schongarer, Reiskocher, Steamer, Joghurtbereiter, Wärmer und Sautier-Pfanne.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'ivory',title:'Philips Airfryer XXL',subtitle:'89,99 €',eyebrow:'Philips',body:'UVP 179 €',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Jetzt kaufen',showAffBar:true,ctaText:'Zum Angebot →'},
+    {type:'stat',color:'ivory',title:'80%',eyebrow:'Weniger Fett',body:'Airfryer-Gerichte enthalten bis zu 80% weniger Fett als klassisch frittierte Varianten.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'ivory',title:'Alle 7 auf einem Blick',eyebrow:'Komplettliste',body:'Instant Pot Duo 5,7L\nPhilips Airfryer XXL\nLeifheit Salatschleuder\nMicroplane Reibe\nOXO Dosenöffner\nSilikon-Spatel-Set\nKüchenthermometer',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'ivory',title:'Alle Links in der Bio',eyebrow:'@deinHandle',body:'Jeden Freitag neue Küchen-Deals.',subtitle:'Jetzt folgen ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'finance-etf',niche:'Finance & Investing',name:'ETF-Starter Guide',desc:'Broker-Vergleich & ETF-Empfehlung mit Ref-Links',color:'charcoal',tags:['Broker','ETF'],slides:[
+    {type:'cover',color:'charcoal',title:'Mit 100 € im Monat zum Vermögen',subtitle:'Der ehrliche Einsteiger-Guide',eyebrow:'Finance Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'content',color:'charcoal',title:'Warum die meisten nie anfangen',eyebrow:'Das Problem',body:'Zu kompliziert, zu riskant, zu wenig Geld — das sind die drei häufigsten Ausreden. Dabei braucht man nur einen Broker, einen ETF und einen Dauerauftrag.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'charcoal',title:'Trade Republic',subtitle:'Kostenlos',eyebrow:'Broker #1',body:'1 € pro Sparplan-Ausführung',image:'',affLink:'https://ref.trade.re/DEINLINK',affLabel:'Konto eröffnen',showAffBar:true,ctaText:'Jetzt starten →'},
+    {type:'stat',color:'charcoal',title:'7% p.a.',eyebrow:'MSCI World ∅ Rendite',body:'Wer 100 € monatlich 20 Jahre anlegt, hat statistisch über 52.000 € angespart.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'charcoal',title:'Dein 3-Schritte-Plan',eyebrow:'So startest du',body:'Broker-Konto eröffnen (10 Min.)\nMSCI World ETF auswählen\nDauerauftrag einrichten & vergessen',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'quote',color:'charcoal',title:'Der beste Zeitpunkt zum Investieren war gestern. Der zweitbeste ist heute.',eyebrow:'— Börsenweisheit',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'charcoal',title:'Broker-Link in der Bio',eyebrow:'@deinHandle',body:'Neu: 10€ Startbonus über unseren Link.',subtitle:'Jetzt starten ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+  {id:'travel-gear',niche:'Travel',name:'Reise-Essentials',desc:'Must-haves für Vielreisende mit Amazon-Links',color:'forest',tags:['Amazon','Reise'],slides:[
+    {type:'cover',color:'forest',title:'Die 8 Reise-Essentials die ich immer einpacke',subtitle:'Nach 50+ Ländern getestet',eyebrow:'Travel Guide',body:'',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'product',color:'forest',title:'Osprey Farpoint 40',subtitle:'139,95 €',eyebrow:'Osprey',body:'Handgepäck-konform, 40L',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Bei Amazon ansehen',showAffBar:true,ctaText:'Zum Deal →'},
+    {type:'product',color:'forest',title:'Anker PowerCore 20000',subtitle:'39,99 €',eyebrow:'Anker',body:'2x Smartphone, 2x vollständig',image:'',affLink:'https://amzn.to/DEINLINK',affLabel:'Jetzt kaufen',showAffBar:true,ctaText:'Zum Angebot →'},
+    {type:'content',color:'forest',title:'Warum ich nur noch Handgepäck fliege',eyebrow:'Pro-Tipp',body:'Kein Warten am Gepäckband. Kein verlorener Koffer. Direkt ins Taxi. 40L reichen für 2 Wochen — wenn du richtig packst.',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'list',color:'forest',title:'Die komplette Packliste',eyebrow:'Alle 8 Essentials',body:'Osprey Farpoint 40 Rucksack\nAnker Powerbank 20000mAh\nUniversal-Reiseadapter\nPacking Cubes (3er Set)\nNoise-Cancelling Kopfhörer\nMikrofaser-Handtuch\nDokumenten-Organizer\nSilikon-Kulturbeutel',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+    {type:'cta',color:'forest',title:'Komplette Liste in der Bio',eyebrow:'@deinHandle',body:'Alle Links direkt zu Amazon.',subtitle:'Jetzt ansehen ↗',image:'',affLink:'',affLabel:'',showAffBar:false,ctaText:''},
+  ]},
+];
+
+let tplFilter='Alle';
+
+function openTemplates(){renderTemplateModal();document.getElementById('tov').style.display='flex'}
+function closeTpl(ev){if(!ev||ev.target===document.getElementById('tov'))document.getElementById('tov').style.display='none'}
+
+function renderTemplateModal(){
+  const niches=['Alle',...new Set(TEMPLATES.map(t=>t.niche))];
+  document.getElementById('tm-filters').innerHTML=niches.map(n=>
+    `<button class="tf ${tplFilter===n?'active':''}" onclick="setTplFilter('${n}')">${n}</button>`).join('');
+  const filtered=tplFilter==='Alle'?TEMPLATES:TEMPLATES.filter(t=>t.niche===tplFilter);
+  document.getElementById('tm-grid').innerHTML=filtered.map(tpl=>{
+    const previews=tpl.slides.slice(0,3).map(sl=>{
+      const c=COLORS[sl.color];
+      return`<div class="tcard-slide" style="background:${c.bg};color:${c.text}"><span style="color:${c.accent}">${sl.type.toUpperCase()}</span></div>`;
+    }).join('');
+    const tags=tpl.tags.map(t=>`<span class="tcard-tag" style="background:var(--accent-bg);color:var(--accent)">${t}</span>`).join('');
+    return`<div class="tcard" onclick="loadTemplate('${tpl.id}')">
+      <div class="tcard-preview" style="background:${COLORS[tpl.color].bg}">
+        <div class="tcard-slides">${previews}</div>
+      </div>
+      <div class="tcard-body">
+        <div class="tcard-niche">${tpl.niche}</div>
+        <div class="tcard-name">${tpl.name}</div>
+        <div class="tcard-desc">${tpl.desc}</div>
+        <div style="margin-top:6px">${tags}<span class="tcard-tag" style="background:var(--surface);color:var(--text-3)">${tpl.slides.length} Folien</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setTplFilter(n){tplFilter=n;renderTemplateModal()}
+function loadTemplate(id){
+  const tpl=TEMPLATES.find(t=>t.id===id);if(!tpl)return;
+  slides=tpl.slides.map(sl=>({...sl,id:nextId++}));
+  current=0;ratio='4:5';renderAll();
+  document.getElementById('tov').style.display='none';
+  showToast(`"${tpl.name}" geladen — Links jetzt anpassen ✓`);
 }
 
 renderAll();
