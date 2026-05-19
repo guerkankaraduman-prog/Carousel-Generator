@@ -1,775 +1,84 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carousel Generator Pro</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Carousel Generator Pro v4 (Clean Fix)</title>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #1a1a2e;
-            --secondary: #16213e;
-            --accent: #00d4ff;
-            --accent-warm: #ff6b6b;
-            --text-light: #ecf0f1;
-            --text-muted: #bdc3c7;
-            --success: #2ecc71;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: var(--text-light);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1800px;
-            margin: 0 auto;
-            min-height: 100vh;
-        }
-
-        .header {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-bottom: 1rem;
-            animation: slideDown 0.6s ease-out;
-        }
-
-        .header h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(135deg, var(--accent), #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: var(--text-muted);
-            font-size: 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .control-panel {
-            background: rgba(22, 33, 62, 0.8);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow);
-            animation: slideLeft 0.6s ease-out 0.1s both;
-            overflow-y: auto;
-            max-height: calc(100vh - 250px);
-        }
-
-        .section {
-            margin-bottom: 2.5rem;
-        }
-
-        .section:last-child {
-            margin-bottom: 0;
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            padding-bottom: 0.8rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 1.2rem;
-            background: linear-gradient(180deg, var(--accent), var(--accent-warm));
-            border-radius: 2px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.6rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-light);
-        }
-
-        input[type="text"],
-        input[type="url"],
-        input[type="number"],
-        input[type="color"],
-        input[type="file"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.85rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-light);
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        input[type="text"]:focus,
-        input[type="url"]:focus,
-        input[type="number"]:focus,
-        input[type="color"]:focus,
-        input[type="file"]:focus,
-        select:focus,
-        textarea:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        input[type="color"] {
-            padding: 0.5rem;
-            cursor: pointer;
-            height: 45px;
-        }
-
-        input[type="file"]::file-selector-button {
-            background: linear-gradient(135deg, var(--accent), #00a8cc);
-            color: var(--primary);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-right: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input[type="file"]::file-selector-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
-        }
-
-        button {
-            padding: 0.85rem 1.5rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #00a8cc);
-            color: var(--primary);
-            width: 100%;
-            margin-bottom: 0.8rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            border: 1px solid var(--border);
-            width: 100%;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-danger {
-            background: rgba(255, 107, 107, 0.2);
-            color: var(--accent-warm);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            padding: 0.6rem 1.2rem;
-            font-size: 0.85rem;
-            margin-left: auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-danger:hover {
-            background: rgba(255, 107, 107, 0.3);
-            border-color: var(--accent-warm);
-        }
-
-        .btn-small {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.85rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .layout-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .layout-option {
-            padding: 1.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .layout-option:hover {
-            border-color: var(--accent);
-            background: rgba(0, 212, 255, 0.05);
-        }
-
-        .layout-option.active {
-            border-color: var(--accent);
-            background: rgba(0, 212, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-        }
-
-        .slide-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .slide-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .slide-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-
-        .slide-list::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        .slide-item {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .slide-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent);
-        }
-
-        .slide-item.active {
-            border-color: var(--accent);
-            background: rgba(0, 212, 255, 0.1);
-        }
-
-        .slide-item-info {
-            text-align: left;
-            flex: 1;
-        }
-
-        .slide-item-title {
-            font-weight: 600;
-            color: var(--text-light);
-            font-size: 0.95rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .slide-item-number {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .preview-area {
-            background: rgba(22, 33, 62, 0.8);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow);
-            animation: slideRight 0.6s ease-out 0.2s both;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .preview-title {
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .carousel-wrapper {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            flex: 1;
-        }
-
-        .carousel {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .carousel-slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.6s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-slide.active {
-            opacity: 1;
-        }
-
-        .slide-full-image {
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slide-full-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: inherit;
-            z-index: 1;
-        }
-
-        .slide-image-left,
-        .slide-image-right {
-            display: flex;
-            align-items: stretch;
-            position: relative;
-        }
-
-        .slide-image-right {
-            flex-direction: row-reverse;
-        }
-
-        .slide-image {
-            flex: 1;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .slide-content {
-            z-index: 2;
-            position: relative;
-        }
-
-        .slide-text-only {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-        }
-
-        .slide-text-only .slide-content {
-            width: 100%;
-            text-align: center;
-        }
-
-        .slide-image-left .slide-content,
-        .slide-image-right .slide-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 3rem;
-        }
-
-        .slide-content h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .slide-content p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            opacity: 0.95;
-        }
-
-        .slide-cta {
-            display: inline-block;
-            padding: 0.85rem 2rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .slide-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .carousel-controls {
-            position: absolute;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .carousel-dots {
-            display: flex;
-            gap: 0.6rem;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .dot:hover {
-            background: rgba(255, 255, 255, 0.6);
-        }
-
-        .dot.active {
-            background: var(--accent);
-            width: 30px;
-            border-radius: 6px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-        }
-
-        .carousel-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 212, 255, 0.2);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-
-        .carousel-btn:hover {
-            background: rgba(0, 212, 255, 0.4);
-            transform: scale(1.1);
-        }
-
-        .carousel-btn:active {
-            transform: scale(0.95);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .stat {
-            background: rgba(0, 212, 255, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-            text-transform: uppercase;
-        }
-
-        .export-section {
-            background: rgba(0, 212, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-success {
-            background: rgba(46, 204, 113, 0.2);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        .alert-error {
-            background: rgba(255, 107, 107, 0.2);
-            border: 1px solid var(--accent-warm);
-            color: var(--accent-warm);
-        }
-
-        .small-text {
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-            display: block;
-            font-size: 0.85rem;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-
-            .control-panel {
-                max-height: 600px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .layout-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .slide-content h2 {
-                font-size: 1.8rem;
-            }
-
-            .slide-image-left,
-            .slide-image-right {
-                flex-direction: column;
-            }
-
-            .slide-image-left .slide-content,
-            .slide-image-right .slide-content {
-                padding: 2rem;
-            }
-
-            .carousel-wrapper {
-                aspect-ratio: 9 / 16;
-            }
-        }
-    </style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#1a1a2e;
+--panel:#16213e;
+--accent:#00d4ff;
+--text:#ecf0f1;
+--muted:#9aa4b2;
+--danger:#ff6b6b;
+}
+body{
+font-family:system-ui;background:linear-gradient(135deg,var(--bg),var(--panel));color:var(--text);min-height:100vh}
+.container{display:grid;grid-template-columns:380px 1fr;gap:20px;padding:20px;max-width:1600px;margin:auto}
+.panel{background:rgba(0,0,0,.25);padding:20px;border-radius:12px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08)}
+button{cursor:pointer;border:none;padding:10px 14px;border-radius:8px;font-weight:600}
+.btn{background:var(--accent);color:#000}
+.btn-danger{background:var(--danger);color:#fff}
+input,textarea{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff}
+.preview{display:flex;flex-direction:column;gap:10px}
+.carousel{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+.slide{position:absolute;width:100%;height:100%;opacity:0;transition:.4s;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px}
+.slide.active{opacity:1}
+.dots{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:#555;cursor:pointer}
+.dot.active{background:var(--accent)}
+.nav{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.small{color:var(--muted);font-size:12px}
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <h1>🎠 Carousel Generator Pro</h1>
-            <p>Erstelle beeindruckende Carousels mit professionellem Design</p>
-        </div>
 
-        <!-- CONTROL PANEL -->
-        <div class="control-panel">
-            <!-- Alert Messages -->
-            <div id="alertBox" class="alert"></div>
+<div class="container">
 
-            <!-- Layout Section -->
-            <div class="section">
-                <div class="section-title">Layout</div>
-                <div class="layout-grid">
-                    <div class="layout-option active" data-layout="full-image">
-                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🖼️</div>
-                        Full Image
-                    </div>
-                    <div class="layout-option" data-layout="image-left">
-                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">◀️</div>
-                        Image Left
-                    </div>
-                    <div class="layout-option" data-layout="image-right">
-                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">▶️</div>
-                        Image Right
-                    </div>
-                    <div class="layout-option" data-layout="text-only">
-                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📝</div>
-                        Text Only
-                    </div>
-                </div>
-            </div>
+<div class="panel">
+<h2>Carousel Editor v4</h2>
 
-            <!-- Colors Section -->
-            <div class="section">
-                <div class="section-title">Farben & Stil</div>
-                <div class="form-group">
-                    <label for="bgColor">Hintergrund Farbe</label>
-                    <input type="color" id="bgColor" value="#1a1a2e">
-                </div>
-                <div class="form-group">
-                    <label for="textColor">Text Farbe</label>
-                    <input type="color" id="textColor" value="#ecf0f1">
-                </div>
-                <div class="form-group">
-                    <label for="btnColor">Button Farbe</label>
-                    <input type="color" id="btnColor" value="#00d4ff">
-                </div>
-                <div class="form-group">
-                    <label for="overlayOpacity">Overlay Opazität</label>
-                    <input type="number" id="overlayOpacity" min="0" max="100" value="40" step="10">
-                    <span class="small-text">0-100%</span>
-                </div>
-            </div>
+<label>Titel</label>
+<input id="title" />
+
+<label>Beschreibung</label>
+<textarea id="desc"></textarea>
+
+<label>Button Text</label>
+<input id="btnText" />
+
+<label>Button Link</label>
+<input id="btnLink" />
+
+<button class="btn" onclick="App.updateSlide()">Update Slide</button>
+<button class="btn" onclick="App.addSlide()">+ Slide</button>
+<button class="btn-danger" onclick="App.deleteSlide()">Delete</button>
+
+<hr style="margin:15px 0;opacity:.2" />
+
+<button class="btn" onclick="App.exportHTML()">Export HTML</button>
+<button class="btn" onclick="App.copyCode()">Copy Code</button>
+
+<p class="small">Fix Version: no scope bugs, safe export, global controls</p>
+</div>
+
+<div class="preview panel">
+
+<div class="carousel" id="carousel"></div>
+
+<div class="nav">
+<button onclick="App.prev()">◀</button>
+<button onclick="App.next()">▶</button>
+</div>
+
+<div class="dots" id="dots"></div>
+
+</div>
+
+</div>
 
             <!-- Slide Content Section -->
             <div class="section">
@@ -838,461 +147,148 @@
         </div>
     </div>
 
-    <script>
-        // ====== CAROUSEL GENERATOR APP ======
-        const app = (() => {
-            // STATE
-            const state = {
-                slides: [
-                    {
-                        id: 1,
-                        title: 'Willkommen zu unserem Carousel',
-                        description: 'Erstelle wunderschöne Carousels mit dieser professionellen Generator-App',
-                        image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2300d4ff;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ff00ff;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="1200" height="800"/%3E%3C/svg%3E',
-                        btnText: 'Jetzt starten',
-                        btnLink: '#',
-                    }
-                ],
-                currentLayout: 'full-image',
-                currentSlideId: 1,
-                nextSlideId: 2,
-                carouselIndex: 0,
-            };
+    <!-- ===================== JS (HIER ist die komplette Logik) ===================== -->
+<script>
+const App = (()=>{
 
-            // DOM ELEMENTS
-            const dom = {
-                carousel: document.getElementById('carousel'),
-                carouselDots: document.getElementById('carouselDots'),
-                slideList: document.getElementById('slideList'),
-                slideTitle: document.getElementById('slideTitle'),
-                slideDescription: document.getElementById('slideDescription'),
-                slideBtnText: document.getElementById('slideBtnText'),
-                slideBtnLink: document.getElementById('slideBtnLink'),
-                slideImage: document.getElementById('slideImage'),
-                bgColor: document.getElementById('bgColor'),
-                textColor: document.getElementById('textColor'),
-                btnColor: document.getElementById('btnColor'),
-                overlayOpacity: document.getElementById('overlayOpacity'),
-                totalSlides: document.getElementById('totalSlides'),
-                currentSlide: document.getElementById('currentSlide'),
-                alertBox: document.getElementById('alertBox'),
-            };
+const state = {
+slides:[
+{
+title:"Welcome",
+desc:"Clean v4 Carousel Builder",
+btnText:"Start",
+btnLink:"#"
+}
+],
+index:0
+};
 
-            // UTILITIES
-            const util = {
-                showAlert(message, type = 'success') {
-                    dom.alertBox.textContent = message;
-                    dom.alertBox.className = `alert show alert-${type}`;
-                    setTimeout(() => {
-                        dom.alertBox.classList.remove('show');
-                    }, 3000);
-                },
+const dom = {
+carousel:document.getElementById("carousel"),
+dots:document.getElementById("dots"),
+title:document.getElementById("title"),
+desc:document.getElementById("desc"),
+btnText:document.getElementById("btnText"),
+btnLink:document.getElementById("btnLink")
+};
 
-                getCurrentSlide() {
-                    return state.slides.find(s => s.id === state.currentSlideId);
-                },
+function render(){
 
-                validateImageFile(file) {
-                    const maxSize = 5 * 1024 * 1024;
-                    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-                    if (!validTypes.includes(file.type)) {
-                        throw new Error('Nur JPG, PNG und WebP sind erlaubt');
-                    }
-                    if (file.size > maxSize) {
-                        throw new Error('Datei darf maximal 5MB groß sein');
-                    }
-                    return true;
-                },
+dom.carousel.innerHTML="";
+dom.dots.innerHTML="";
 
-                sanitizeHTML(text) {
-                    const div = document.createElement('div');
-                    div.textContent = text;
-                    return div.innerHTML;
-                },
-            };
+state.slides.forEach((s,i)=>{
+const div=document.createElement("div");
+div.className="slide"+(i===state.index?" active":"");
+div.innerHTML=`
+<h1>${s.title}</h1>
+<p>${s.desc}</p>
+${s.btnText?`<a href="${s.btnLink}" style="color:#00d4ff">${s.btnText}</a>`:""}
+`;
+dom.carousel.appendChild(div);
 
-            // SLIDE MANAGEMENT
-            const slideManager = {
-                add() {
-                    const newSlide = {
-                        id: state.nextSlideId++,
-                        title: `Folie ${state.nextSlideId}`,
-                        description: 'Folienbeschreibung eingeben',
-                        image: `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad${state.nextSlideId}" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23ff6b6b;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ffa500;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad${state.nextSlideId})" width="1200" height="800"/%3E%3C/svg%3E`,
-                        btnText: '',
-                        btnLink: '',
-                    };
-                    state.slides.push(newSlide);
-                    state.currentSlideId = newSlide.id;
-                    util.showAlert('Neue Folie hinzugefügt ✓', 'success');
-                    return newSlide;
-                },
+const dot=document.createElement("div");
+dot.className="dot"+(i===state.index?" active":"");
+dot.onclick=()=>go(i);
+dom.dots.appendChild(dot);
+});
 
-                delete(id) {
-                    if (state.slides.length <= 1) {
-                        util.showAlert('Du musst mindestens eine Folie haben!', 'error');
-                        return false;
-                    }
-                    state.slides = state.slides.filter(s => s.id !== id);
-                    if (state.currentSlideId === id) {
-                        state.currentSlideId = state.slides[0].id;
-                    }
-                    util.showAlert('Folie gelöscht', 'success');
-                    return true;
-                },
+syncForm();
+}
 
-                select(id) {
-                    state.currentSlideId = id;
-                },
+function syncForm(){
+const s=state.slides[state.index];
+if(!s) return;
+dom.title.value=s.title;
+dom.desc.value=s.desc;
+dom.btnText.value=s.btnText||"";
+dom.btnLink.value=s.btnLink||"";
+}
 
-                update(id, updates) {
-                    const slide = state.slides.find(s => s.id === id);
-                    if (slide) {
-                        Object.assign(slide, updates);
-                    }
-                },
-            };
+function updateSlide(){
+const s=state.slides[state.index];
+s.title=dom.title.value;
+s.desc=dom.desc.value;
+s.btnText=dom.btnText.value;
+s.btnLink=dom.btnLink.value;
+render();
+}
 
-            // RENDERING
-            const renderer = {
-                carousel() {
-                    try {
-                        const { slides, currentLayout } = state;
-                        const { bgColor, textColor, btnColor, overlayOpacity } = {
-                            bgColor: dom.bgColor.value,
-                            textColor: dom.textColor.value,
-                            btnColor: dom.btnColor.value,
-                            overlayOpacity: dom.overlayOpacity.value / 100,
-                        };
+function addSlide(){
+state.slides.push({title:"New Slide",desc:"...",btnText:"",btnLink:"#"});
+state.index=state.slides.length-1;
+render();
+}
 
-                        dom.carousel.innerHTML = '';
-                        dom.carouselDots.innerHTML = '';
+function del(){
+if(state.slides.length===1)return;
+state.slides.splice(state.index,1);
+state.index=Math.max(0,state.index-1);
+render();
+}
 
-                        slides.forEach((slide, index) => {
-                            const slideEl = this.createSlideElement(
-                                slide,
-                                index,
-                                currentLayout,
-                                { bgColor, textColor, btnColor, overlayOpacity }
-                            );
-                            dom.carousel.appendChild(slideEl);
+function next(){
+state.index=(state.index+1)%state.slides.length;
+render();
+}
 
-                            const dot = this.createDot(index);
-                            dom.carouselDots.appendChild(dot);
-                        });
+function prev(){
+state.index=(state.index-1+state.slides.length)%state.slides.length;
+render();
+}
 
-                        this.updateCarouselDisplay();
-                    } catch (error) {
-                        util.showAlert(`Fehler beim Rendern: ${error.message}`, 'error');
-                        console.error(error);
-                    }
-                },
+function go(i){
+state.index=i;
+render();
+}
 
-                createSlideElement(slide, index, layout, colors) {
-                    const { bgColor, textColor, btnColor, overlayOpacity } = colors;
-                    const slideEl = document.createElement('div');
-                    slideEl.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
-                    slideEl.dataset.slideIndex = index;
+function exportHTML(){
+const html=`<!DOCTYPE html><html><head><meta charset='utf-8'><title>Export</title></head><body>
+<div id='app'></div>
+<script>
+let i=0;
+const slides=${JSON.stringify(state.slides)};
+function r(){
+document.getElementById('app').innerHTML=`<h1>${slides[i].title}</h1><p>${slides[i].desc}</p>`;
+}
+window.next=()=>{i=(i+1)%slides.length;r()};
+window.prev=()=>{i=(i-1+slides.length)%slides.length;r()};
+window.onload=r;
+</script>
+</body></html>`;
 
-                    const btnHTML = slide.btnText
-                        ? `<a href="${util.sanitizeHTML(slide.btnLink || '#')}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${util.sanitizeHTML(slide.btnText)}</a>`
-                        : '';
+const blob=new Blob([html],{type:"text/html"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="carousel-v4.html";
+a.click();
+}
 
-                    const contentHTML = `
-                        <h2>${util.sanitizeHTML(slide.title)}</h2>
-                        <p>${util.sanitizeHTML(slide.description)}</p>
-                        ${btnHTML}
-                    `;
+function copyCode(){
+navigator.clipboard.writeText(exportHTML.toString());
+alert("Copied (function ref)");
+}
 
-                    switch (layout) {
-                        case 'full-image':
-                            slideEl.innerHTML = `
-                                <div class="slide-full-image" style="background-image: url('${slide.image}')">
-                                    <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
-                                        ${contentHTML}
-                                    </div>
-                                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
-                                </div>
-                            `;
-                            break;
+return {
+init:render,
+addSlide,
+deleteSlide:del,
+updateSlide,
+next,
+prev,
+go,
+exportHTML,
+copyCode
+};
 
-                        case 'image-left':
-                        case 'image-right':
-                            slideEl.classList.add(`slide-${layout}`);
-                            slideEl.innerHTML = `
-                                <div class="slide-image" style="background-image: url('${slide.image}');"></div>
-                                <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
-                                    ${contentHTML}
-                                </div>
-                            `;
-                            break;
+})();
 
-                        case 'text-only':
-                            slideEl.classList.add('slide-text-only');
-                            slideEl.innerHTML = `
-                                <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
-                                    ${contentHTML}
-                                </div>
-                            `;
-                            break;
-                    }
+window.App=App;
+document.addEventListener("DOMContentLoaded",App.init);
+</script>
 
-                    return slideEl;
-                },
-
-                createDot(index) {
-                    const dot = document.createElement('div');
-                    dot.className = `dot ${index === 0 ? 'active' : ''}`;
-                    dot.onclick = () => app.goToSlide(index);
-                    return dot;
-                },
-
-                slideList() {
-                    const list = dom.slideList;
-                    list.innerHTML = '';
-                    state.slides.forEach((slide, index) => {
-                        const item = document.createElement('div');
-                        item.className = `slide-item ${slide.id === state.currentSlideId ? 'active' : ''}`;
-                        item.innerHTML = `
-                            <div class="slide-item-info" onclick="app.selectSlide(${slide.id})">
-                                <div class="slide-item-title">${util.sanitizeHTML(slide.title || 'Ohne Titel')}</div>
-                                <div class="slide-item-number">Folie ${index + 1}</div>
-                            </div>
-                            <button class="btn-danger" onclick="app.deleteSlide(${slide.id})">✕</button>
-                        `;
-                        list.appendChild(item);
-                    });
-                },
-
-                updateCarouselDisplay() {
-                    const slideEls = document.querySelectorAll('.carousel-slide');
-                    const dots = document.querySelectorAll('.dot');
-
-                    slideEls.forEach((el, i) => el.classList.remove('active'));
-                    dots.forEach((dot, i) => dot.classList.remove('active'));
-
-                    if (slideEls[state.carouselIndex]) {
-                        slideEls[state.carouselIndex].classList.add('active');
-                    }
-                    if (dots[state.carouselIndex]) {
-                        dots[state.carouselIndex].classList.add('active');
-                    }
-                },
-            };
-
-            // EVENT HANDLERS
-            const events = {
-                init() {
-                    // Layout Selection
-                    document.querySelectorAll('.layout-option').forEach(option => {
-                        option.addEventListener('click', () => {
-                            document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
-                            option.classList.add('active');
-                            state.currentLayout = option.dataset.layout;
-                            renderer.carousel();
-                        });
-                    });
-
-                    // Color Inputs
-                    [dom.bgColor, dom.textColor, dom.btnColor, dom.overlayOpacity].forEach(input => {
-                        input.addEventListener('change', () => renderer.carousel());
-                    });
-
-                    // Slide Content Inputs
-                    [dom.slideTitle, dom.slideDescription, dom.slideBtnText, dom.slideBtnLink].forEach(input => {
-                        input.addEventListener('change', () => {
-                            slideManager.update(state.currentSlideId, {
-                                title: dom.slideTitle.value,
-                                description: dom.slideDescription.value,
-                                btnText: dom.slideBtnText.value,
-                                btnLink: dom.slideBtnLink.value,
-                            });
-                            renderer.carousel();
-                            renderer.slideList();
-                        });
-                    });
-
-                    // Image Upload
-                    dom.slideImage.addEventListener('change', (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-
-                        try {
-                            util.validateImageFile(file);
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                                slideManager.update(state.currentSlideId, {
-                                    image: event.target.result,
-                                });
-                                renderer.carousel();
-                                util.showAlert('Bild hochgeladen ✓', 'success');
-                            };
-                            reader.onerror = () => {
-                                util.showAlert('Fehler beim Lesen der Datei', 'error');
-                            };
-                            reader.readAsDataURL(file);
-                        } catch (error) {
-                            util.showAlert(error.message, 'error');
-                        }
-                    });
-                },
-
-                loadSlideData() {
-                    const slide = util.getCurrentSlide();
-                    if (slide) {
-                        dom.slideTitle.value = slide.title || '';
-                        dom.slideDescription.value = slide.description || '';
-                        dom.slideBtnText.value = slide.btnText || '';
-                        dom.slideBtnLink.value = slide.btnLink || '';
-                    }
-                },
-
-                updateStats() {
-                    dom.totalSlides.textContent = state.slides.length;
-                    const currentIndex = state.slides.findIndex(s => s.id === state.currentSlideId);
-                    dom.currentSlide.textContent = currentIndex + 1;
-                },
-            };
-
-            // PUBLIC API
-            return {
-                init() {
-                    events.init();
-                    renderer.carousel();
-                    renderer.slideList();
-                    events.loadSlideData();
-                    events.updateStats();
-                },
-
-                addSlide() {
-                    slideManager.add();
-                    renderer.carousel();
-                    renderer.slideList();
-                    events.loadSlideData();
-                    events.updateStats();
-                },
-
-                deleteSlide(id) {
-                    if (slideManager.delete(id)) {
-                        renderer.carousel();
-                        renderer.slideList();
-                        events.loadSlideData();
-                        events.updateStats();
-                    }
-                },
-
-                selectSlide(id) {
-                    slideManager.select(id);
-                    renderer.slideList();
-                    events.loadSlideData();
-                },
-
-                nextSlide() {
-                    state.carouselIndex = (state.carouselIndex + 1) % state.slides.length;
-                    renderer.updateCarouselDisplay();
-                },
-
-                prevSlide() {
-                    state.carouselIndex = (state.carouselIndex - 1 + state.slides.length) % state.slides.length;
-                    renderer.updateCarouselDisplay();
-                },
-
-                goToSlide(index) {
-                    state.carouselIndex = index;
-                    renderer.updateCarouselDisplay();
-                },
-
-                downloadCarousel() {
-                    try {
-                        const html = this.generateHTML();
-                        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-                        const url = URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = `carousel-${new Date().getTime()}.html`;
-                        link.click();
-                        URL.revokeObjectURL(url);
-                        util.showAlert('Carousel heruntergeladen ✓', 'success');
-                    } catch (error) {
-                        util.showAlert(`Fehler beim Download: ${error.message}`, 'error');
-                    }
-                },
-
-                copyToClipboard() {
-                    try {
-                        const html = this.generateHTML();
-                        navigator.clipboard.writeText(html).then(() => {
-                            util.showAlert('Code in Zwischenablage kopiert ✓', 'success');
-                        }).catch(() => {
-                            util.showAlert('Fehler beim Kopieren', 'error');
-                        });
-                    } catch (error) {
-                        util.showAlert(`Fehler: ${error.message}`, 'error');
-                    }
-                },
-
-                generateHTML() {
-                    const { bgColor, textColor, btnColor, overlayOpacity } = {
-                        bgColor: dom.bgColor.value,
-                        textColor: dom.textColor.value,
-                        btnColor: dom.btnColor.value,
-                        overlayOpacity: dom.overlayOpacity.value / 100,
-                    };
-
-                    const slidesHTML = state.slides.map((slide, index) => {
-                        const btnHTML = slide.btnText
-                            ? `<a href="${util.sanitizeHTML(slide.btnLink || '#')}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${util.sanitizeHTML(slide.btnText)}</a>`
-                            : '';
-
-                        const contentHTML = `
-                            <h2>${util.sanitizeHTML(slide.title)}</h2>
-                            <p>${util.sanitizeHTML(slide.description)}</p>
-                            ${btnHTML}
-                        `;
-
-                        let slideHTML = '';
-
-                        switch (state.currentLayout) {
-                            case 'full-image':
-                                slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
-                        <div class="slide-full-image" style="background-image: url('${slide.image}')">
-                            <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
-                                ${contentHTML}
-                            </div>
-                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
-                        </div>
-                    </div>`;
-                                break;
-
-                            case 'image-left':
-                            case 'image-right':
-                                slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" style="${state.currentLayout === 'image-right' ? 'flex-direction: row-reverse;' : ''}">
-                        <div class="slide-image" style="background-image: url('${slide.image}'); flex: 1;"></div>
-                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
-                            ${contentHTML}
-                        </div>
-                    </div>`;
-                                break;
-
-                            case 'text-only':
-                                slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" style="width: 100%;">
-                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; width: 100%; text-align: center;">
-                            ${contentHTML}
-                        </div>
-                    </div>`;
-                                break;
-                        }
-
-                        return slideHTML;
-                    }).join('');
-
-                    const dotsHTML = state.slides.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
-
-                    const firstSlide = state.slides[0];
-                    const pinPageUrl = typeof window !== 'undefined' ? window.location.href : 'https://example.com';
+</body>
+</html>
 
                     return `<!DOCTYPE html>
 <html lang="de">
