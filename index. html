@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Carousel Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f0f13;
+    --surface:   #18181f;
+    --surface2:  #22222c;
+    --border:    rgba(255,255,255,0.08);
+    --border-md: rgba(255,255,255,0.14);
+    --text:      #f0f0f0;
+    --text-2:    #9494a8;
+    --text-3:    #5a5a70;
+    --accent:    #7c6cfc;
+    --accent-bg: rgba(124,108,252,0.12);
+    --danger:    #e05260;
+    --radius:    10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    height: 52px;
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .topbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-logo span {
+    color: var(--accent);
+    font-size: 20px;
+  }
+  .topbar-sep { flex: 1; }
+  .topbar-count {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .topbar-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border-md);
+    background: transparent;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topbar-btn:hover { background: var(--surface2); color: var(--text); }
+  .topbar-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .topbar-btn.primary:hover { opacity: 0.88; }
+
+  /* LAYOUT */
+  .workspace {
+    display: grid;
+    grid-template-columns: 300px 1fr 280px;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 52px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--surface);
+    border-right: 0.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar-title {
+    padding: 14px 16px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .slides-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .slides-list::-webkit-scrollbar { width: 3px; }
+  .slides-list::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
+
+  .slide-thumb {
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+    background: transparent;
+    position: relative;
+  }
+  .slide-thumb:hover { border-color: var(--border-md); background: var(--surface2); }
+  .slide-thumb.active {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .thumb-num {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-3);
+    min-width: 16px;
+  }
+  .slide-thumb.active .thumb-num { color: var(--accent); }
+  .thumb-preview {
+    width: 44px; height: 36px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb-preview canvas { border-radius: 3px; }
+  .thumb-meta { flex: 1; min-width: 0; }
+  .thumb-title {
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text);
+  }
+  .thumb-type { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+  .thumb-actions {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .slide-thumb:hover .thumb-actions { opacity: 1; }
+  .thumb-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-3);
+    padding: 3px 5px;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .thumb-action-btn:hover { color: var(--danger); background: rgba(224,82,96,0.12); }
+  .thumb-action-btn.move:hover { color: var(--accent); background: var(--accent-bg); }
+
+  .add-btn {
+    margin: 4px 10px 14px;
+    padding: 9px;
+    border: 0.5px dashed var(--border-md);
+    background: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .add-btn:hover { background: var(--surface2); color: var(--text-2); border-color: var(--border-md); }
+
+  /* CANVAS */
+  .canvas-area {
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    overflow: auto;
+    padding: 32px;
+    position: relative;
+  }
+  .canvas-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .nav-arrow {
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-2);
+    transition: all 0.15s;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .nav-arrow:hover:not(:disabled) { background: var(--surface2); color: var(--text); }
+  .nav-arrow:disabled { opacity: 0.25; cursor: default; }
+
+  .slide-frame {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  .dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 8px;
+  }
+  .dot.active { width: 24px; background: var(--accent); }
+
+  /* PROPERTIES PANEL */
+  .props-panel {
+    background: var(--surface);
+    border-left: 0.5px solid var(--border);
+    overflow-y: auto;
+    padding: 0 0 20px;
+  }
+  .props-panel::-webkit-scrollbar { width: 3px; }
+  .props-panel::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
+
+  .prop-section {
+    padding: 14px 16px 0;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 0;
+  }
+  .prop-section:last-child { border-bottom: none; }
+  .prop-section-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 12px;
+  }
+
+  /* Layout picker */
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .layout-btn {
+    padding: 8px 6px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-3);
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .layout-btn:hover { border-color: var(--border-md); color: var(--text-2); background: var(--surface2); }
+  .layout-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+  .layout-icon {
+    width: 32px; height: 22px;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 700;
+  }
+
+  /* Color picker */
+  .color-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .color-dot {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .color-dot:hover { transform: scale(1.12); }
+  .color-dot.active::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+  }
+
+  /* Format picker */
+  .format-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .format-btn {
+    flex: 1;
+    padding: 6px 4px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .format-btn:hover { border-color: var(--border-md); color: var(--text-2); }
+  .format-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+  .format-preview {
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+    opacity: 0.6;
+  }
+
+  /* Fields */
+  .field-group { margin-bottom: 12px; }
+  .field-label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-3);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .field-input {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  .field-input:focus { border-color: var(--accent); }
+  .field-input::placeholder { color: var(--text-3); }
+
+  /* SLIDE LAYOUTS */
+  .s-wrap { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: 'DM Sans', sans-serif; }
+
+  .s-num {
+    position: absolute;
+    top: 18px; right: 18px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    opacity: 0.3;
+  }
+
+  /* Cover */
+  .s-cover { display: flex; flex-direction: column; justify-content: center; padding: 44px 44px; height: 100%; }
+  .s-cover .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; opacity: 0.6; margin-bottom: 18px; }
+  .s-cover .headline { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.1; margin-bottom: 18px; }
+  .s-cover .sub { font-weight: 300; line-height: 1.55; opacity: 0.65; }
+  .deco-circle { position: absolute; border-radius: 50%; pointer-events: none; }
+
+  /* Content */
+  .s-content { display: flex; flex-direction: column; padding: 40px 44px; height: 100%; }
+  .s-content .label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.4; margin-bottom: 18px; }
+  .s-content .bar { height: 2px; border-radius: 1px; width: 36px; margin-bottom: 20px; opacity: 0.5; }
+  .s-content .heading { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+  .s-content .body-text { font-size: 14px; line-height: 1.72; opacity: 0.75; font-weight: 300; flex: 1; }
+
+  /* Stat */
+  .s-stat { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 44px; height: 100%; gap: 6px; }
+  .s-stat .big { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1; }
+  .s-stat .lbl { font-size: 13px; opacity: 0.5; font-weight: 300; letter-spacing: 1px; }
+  .s-stat .desc { font-size: 13px; line-height: 1.65; opacity: 0.75; max-width: 78%; margin-top: 12px; font-weight: 300; }
+
+  /* Quote */
+  .s-quote { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 44px; height: 100%; }
+  .s-quote .qm { font-family: 'Playfair Display', serif; font-size: 88px; line-height: 0.75; opacity: 0.12; margin-bottom: 20px; }
+  .s-quote .qt { font-family: 'Playfair Display', serif; font-size: 21px; line-height: 1.42; font-style: italic; margin-bottom: 20px; }
+  .s-quote .author { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; opacity: 0.4; }
+
+  /* CTA */
+  .s-cta { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 44px; height: 100%; }
+  .s-cta .intro { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.4; margin-bottom: 18px; }
+  .s-cta .title { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.2; margin-bottom: 24px; }
+  .s-cta .cta-pill { display: inline-block; padding: 11px 28px; border-radius: 40px; font-size: 14px; font-weight: 500; margin-bottom: 14px; }
+  .s-cta .handle { font-size: 12px; opacity: 0.4; }
+
+  /* List */
+  .s-list { display: flex; flex-direction: column; padding: 36px 44px; height: 100%; }
+  .s-list .label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px; }
+  .s-list .heading { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.2; margin-bottom: 20px; }
+  .s-list .items { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .s-list .item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; opacity: 0.8; font-weight: 300; }
+  .s-list .item-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+  /* export overlay */
+  .export-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  .export-modal {
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: 14px;
+    padding: 28px 32px;
+    width: 480px;
+    max-width: 90vw;
+  }
+  .export-modal h2 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 6px; }
+  .export-modal p { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.5; }
+  .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .export-opt {
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    background: transparent;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .export-opt:hover { border-color: var(--accent); background: var(--accent-bg); }
+  .export-opt-icon { font-size: 22px; margin-bottom: 6px; }
+  .export-opt-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .export-opt-desc { font-size: 11px; color: var(--text-3); }
+  .export-close {
+    width: 100%;
+    padding: 10px;
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .export-close:hover { background: var(--surface2); color: var(--text); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--surface2);
+    border: 0.5px solid var(--border-md);
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 200;
+    transition: transform 0.25s ease;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <span>◈</span> Carousel Generator
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-count" id="top-count"></span>
+  <button class="topbar-btn" onclick="openExport()">↗ Exportieren</button>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Folien</div>
+    <div class="slides-list" id="slides-list"></div>
+    <button class="add-btn" onclick="addSlide()">+ Folie hinzufügen</button>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas-area">
+    <div class="canvas-nav">
+      <button class="nav-arrow" id="prev" onclick="navigate(-1)">&#8592;</button>
+      <div class="slide-frame" id="slide-frame"></div>
+      <button class="nav-arrow" id="next" onclick="navigate(1)">&#8594;</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- PROPERTIES -->
+  <div class="props-panel" id="props-panel"></div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="export-overlay" id="export-modal" style="display:none" onclick="closeExport(event)">
+  <div class="export-modal">
+    <h2>Exportieren</h2>
+    <p>Wähle, wie du deinen Carousel exportieren möchtest.</p>
+    <div class="export-grid">
+      <button class="export-opt" onclick="exportPNG()">
+        <div class="export-opt-icon">🖼</div>
+        <div class="export-opt-title">PNG-Bilder</div>
+        <div class="export-opt-desc">Jede Folie als separate Datei</div>
+      </button>
+      <button class="export-opt" onclick="exportHTML()">
+        <div class="export-opt-icon">📄</div>
+        <div class="export-opt-title">HTML-Code</div>
+        <div class="export-opt-desc">Einbettbarer Carousel-Code</div>
+      </button>
+      <button class="export-opt" onclick="exportJSON()">
+        <div class="export-opt-icon">💾</div>
+        <div class="export-opt-title">JSON speichern</div>
+        <div class="export-opt-desc">Projekt für späteren Import</div>
+      </button>
+      <button class="export-opt" onclick="importJSON()">
+        <div class="export-opt-icon">📂</div>
+        <div class="export-opt-title">Projekt laden</div>
+        <div class="export-opt-desc">JSON-Datei importieren</div>
+      </button>
+    </div>
+    <button class="export-close" onclick="closeExport()">Abbrechen</button>
+  </div>
+</div>
+<input type="file" id="file-input" accept=".json" style="display:none" onchange="loadJSON(event)" />
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const COLORS = {
+  dark:    { bg:'#1a1a2e', text:'#f0f0f0', accent:'#e94560', name:'Dunkel' },
+  indigo:  { bg:'#1e1b4b', text:'#e0e7ff', accent:'#a5b4fc', name:'Indigo' },
+  forest:  { bg:'#1a2e1e', text:'#ecfdf5', accent:'#6ee7b7', name:'Wald' },
+  ember:   { bg:'#2d1700', text:'#fff7ed', accent:'#fb923c', name:'Ember' },
+  slate:   { bg:'#0f172a', text:'#f1f5f9', accent:'#38bdf8', name:'Slate' },
+  rose:    { bg:'#2d0f1a', text:'#fff1f2', accent:'#f9a8d4', name:'Rose' },
+  sage:    { bg:'#1a2c1e', text:'#f0fdf4', accent:'#86efac', name:'Salbei' },
+  ivory:   { bg:'#faf7f0', text:'#1c1917', accent:'#92400e', name:'Elfenbein' },
+};
+
+const RATIOS = {
+  '1:1':  { w:480, h:480, label:'1:1', fw:10, fh:10 },
+  '4:5':  { w:440, h:550, label:'4:5', fw:10, fh:12 },
+  '9:16': { w:338, h:600, label:'9:16', fw:10, fh:17 },
+};
+
+let slides = [
+  { id:1, type:'cover',   color:'dark',   title:'Der neue Weg zu mehr Wachstum', subtitle:'Strategien für 2025', eyebrow:'Guide', body:'' },
+  { id:2, type:'content', color:'dark',   title:'Warum Konsistenz gewinnt', eyebrow:'01', body:'Wer regelmäßig publiziert, baut Vertrauen auf. Nicht perfekte, sondern kontinuierliche Inhalte machen den Unterschied zwischen Sichtbarkeit und Vergessenheit.', subtitle:'' },
+  { id:3, type:'stat',    color:'dark',   title:'3×', eyebrow:'Fakt', body:'Marken, die konsistent posten, erzielen im Schnitt dreimal mehr organische Reichweite.', subtitle:'' },
+  { id:4, type:'list',    color:'dark',   title:'3 Schritte zum Start', eyebrow:'Anleitung', body:'Thema wählen\nRedaktionsplan erstellen\nTäglich 15 Min. schreiben', subtitle:'' },
+  { id:5, type:'cta',     color:'dark',   title:'Starte heute.', eyebrow:'@deinHandle', body:'Wöchentliche Tipps zu Content & Wachstum.', subtitle:'Jetzt folgen' },
+];
+let current = 0;
+let ratio = '1:1';
+let nextId = 10;
+
+const TYPES = { cover:'Cover', content:'Inhalt', stat:'Statistik', quote:'Zitat', cta:'CTA', list:'Liste' };
+const FIELDS = {
+  cover:   [{k:'eyebrow',l:'Eyebrow'},{k:'title',l:'Haupttitel'},{k:'subtitle',l:'Untertitel'}],
+  content: [{k:'eyebrow',l:'Nummer'},{k:'title',l:'Überschrift'},{k:'body',l:'Text',multi:true}],
+  stat:    [{k:'title',l:'Zahl / Wert'},{k:'eyebrow',l:'Label'},{k:'body',l:'Beschreibung',multi:true}],
+  quote:   [{k:'title',l:'Zitat',multi:true},{k:'eyebrow',l:'Autor'}],
+  cta:     [{k:'eyebrow',l:'Handle / Label'},{k:'title',l:'Titel'},{k:'subtitle',l:'Button-Text'},{k:'body',l:'Zusatz'}],
+  list:    [{k:'eyebrow',l:'Label'},{k:'title',l:'Überschrift'},{k:'body',l:'Punkte (je Zeile)',multi:true}],
+};
+
+function s() { return slides[current]; }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+function renderAll() {
+  renderSidebar();
+  renderCanvas();
+  renderDots();
+  renderProps();
+  const n = slides.length;
+  document.getElementById('top-count').textContent = n + ' Folie' + (n===1?'':'n');
+  document.getElementById('prev').disabled = current === 0;
+  document.getElementById('next').disabled = current === slides.length - 1;
+}
+
+/* --- SIDEBAR --- */
+function renderSidebar() {
+  document.getElementById('slides-list').innerHTML = slides.map((sl,i) => {
+    const c = COLORS[sl.color];
+    return `<div class="slide-thumb ${i===current?'active':''}" onclick="selectSlide(${i})">
+      <span class="thumb-num">${String(i+1).padStart(2,'0')}</span>
+      <div class="thumb-preview" style="background:${c.bg}; border-radius:4px;">
+        <span style="font-size:7px;font-weight:700;color:${c.accent};letter-spacing:1px;">${sl.type.toUpperCase()}</span>
+      </div>
+      <div class="thumb-meta">
+        <div class="thumb-title">${sl.title||'—'}</div>
+        <div class="thumb-type">${TYPES[sl.type]||sl.type}</div>
+      </div>
+      <div class="thumb-actions">
+        ${i>0?`<button class="thumb-action-btn move" onclick="moveSlide(event,${i},-1)" title="Nach oben">↑</button>`:''}
+        ${i<slides.length-1?`<button class="thumb-action-btn move" onclick="moveSlide(event,${i},1)" title="Nach unten">↓</button>`:''}
+        ${slides.length>1?`<button class="thumb-action-btn" onclick="deleteSlide(event,${i})" title="Löschen">✕</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* --- CANVAS --- */
+function renderCanvas() {
+  const r = RATIOS[ratio];
+  const frame = document.getElementById('slide-frame');
+  frame.style.width = r.w + 'px';
+  frame.style.height = r.h + 'px';
+  frame.innerHTML = buildSlide(s(), r.w, r.h, current+1, slides.length);
+}
+
+function fs(w) { return Math.round(w * 0.075); } // headline font size relative to width
+
+function buildSlide(sl, w, h, num, total) {
+  const c = COLORS[sl.color];
+  const base = `background:${c.bg};color:${c.text};width:${w}px;height:${h}px;`;
+  const numBadge = `<div class="s-num" style="color:${c.text}">${num}/${total}</div>`;
+  const hl = fs(w);
+
+  if (sl.type === 'cover') {
+    return `<div class="s-wrap s-cover" style="${base}">
+      ${numBadge}
+      <div class="eyebrow" style="color:${c.accent}">${sl.eyebrow||''}</div>
+      <div class="headline" style="font-size:${hl}px">${sl.title||''}</div>
+      <div class="sub" style="font-size:${Math.round(w*0.034)}px">${sl.subtitle||''}</div>
+      <div class="deco-circle" style="background:${c.accent};width:${w*0.55}px;height:${w*0.55}px;right:${-w*0.15}px;bottom:${-w*0.15}px;opacity:0.07"></div>
+      <div class="deco-circle" style="background:${c.text};width:${w*0.28}px;height:${w*0.28}px;right:${w*0.14}px;bottom:${w*0.14}px;opacity:0.05"></div>
+    </div>`;
+  }
+  if (sl.type === 'content') {
+    return `<div class="s-wrap s-content" style="${base}">
+      ${numBadge}
+      <div class="label">${sl.eyebrow||''}</div>
+      <div class="bar" style="background:${c.accent}"></div>
+      <div class="heading" style="font-size:${Math.round(hl*0.72)}px">${sl.title||''}</div>
+      <div class="body-text">${(sl.body||'').replace(/\n/g,'<br>')}</div>
+    </div>`;
+  }
+  if (sl.type === 'stat') {
+    return `<div class="s-wrap s-stat" style="${base}">
+      ${numBadge}
+      <div class="big" style="font-size:${Math.round(w*0.16)}px;color:${c.accent}">${sl.title||'0'}</div>
+      <div class="lbl">${sl.eyebrow||''}</div>
+      <div class="desc">${(sl.body||'').replace(/\n/g,'<br>')}</div>
+    </div>`;
+  }
+  if (sl.type === 'quote') {
+    return `<div class="s-wrap s-quote" style="${base}">
+      ${numBadge}
+      <div class="qm" style="color:${c.accent}">"</div>
+      <div class="qt" style="font-size:${Math.round(w*0.048)}px">${sl.title||''}</div>
+      <div class="author" style="color:${c.accent}">${sl.eyebrow||''}</div>
+    </div>`;
+  }
+  if (sl.type === 'cta') {
+    return `<div class="s-wrap s-cta" style="${base}">
+      ${numBadge}
+      <div class="intro">${sl.eyebrow||''}</div>
+      <div class="title" style="font-size:${Math.round(hl*0.78)}px">${sl.title||''}</div>
+      <div class="cta-pill" style="background:${c.accent};color:${c.bg}">${sl.subtitle||'Jetzt folgen'}</div>
+      <div class="handle">${sl.body||''}</div>
+    </div>`;
+  }
+  if (sl.type === 'list') {
+    const items = (sl.body||'').split('\n').filter(l=>l.trim());
+    return `<div class="s-wrap s-list" style="${base}">
+      ${numBadge}
+      <div class="label">${sl.eyebrow||''}</div>
+      <div class="heading" style="font-size:${Math.round(hl*0.62)}px">${sl.title||''}</div>
+      <div class="items">${items.map(it=>`<div class="item"><div class="item-dot" style="background:${c.accent}"></div><div>${it}</div></div>`).join('')}</div>
+    </div>`;
+  }
+  return '';
+}
+
+/* --- DOTS --- */
+function renderDots() {
+  document.getElementById('dots').innerHTML = slides.map((_,i) =>
+    `<div class="dot ${i===current?'active':''}" onclick="selectSlide(${i})"></div>`
+  ).join('');
+}
+
+/* --- PROPERTIES --- */
+function renderProps() {
+  const sl = s();
+  const c = COLORS[sl.color];
+
+  const layoutBtns = Object.keys(TYPES).map(t => `
+    <button class="layout-btn ${sl.type===t?'active':''}" onclick="setType('${t}')">
+      <div class="layout-icon">${TYPES[t][0]}</div>
+      ${TYPES[t]}
+    </button>`).join('');
+
+  const colorDots = Object.entries(COLORS).map(([key,col]) => `
+    <div class="color-dot ${sl.color===key?'active':''}" data-color="${key}"
+      style="background:${col.bg}; border: 1.5px solid ${col.accent}; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.2)"
+      onclick="setColor('${key}')" title="${col.name}"></div>`).join('');
+
+  const formatBtns = Object.entries(RATIOS).map(([key,r]) => `
+    <button class="format-btn ${ratio===key?'active':''}" onclick="setRatio('${key}')">
+      <div class="format-preview" style="width:${r.fw}px;height:${r.fh}px"></div>
+      ${r.label}
+    </button>`).join('');
+
+  const fields = (FIELDS[sl.type]||[]).map(f => `
+    <div class="field-group">
+      <label class="field-label">${f.l}</label>
+      ${f.multi
+        ? `<textarea class="field-input" rows="4" placeholder="…" oninput="updateField('${f.k}',this.value)">${sl[f.k]||''}</textarea>`
+        : `<input class="field-input" type="text" placeholder="…" value="${(sl[f.k]||'').replace(/"/g,'&quot;')}" oninput="updateField('${f.k}',this.value)">`
+      }
+    </div>`).join('');
+
+  document.getElementById('props-panel').innerHTML = `
+    <div class="prop-section">
+      <div class="prop-section-title">Layout</div>
+      <div class="layout-grid">${layoutBtns}</div>
+    </div>
+    <div class="prop-section">
+      <div class="prop-section-title">Farbpalette</div>
+      <div class="color-row">${colorDots}</div>
+    </div>
+    <div class="prop-section">
+      <div class="prop-section-title">Format</div>
+      <div class="format-row">${formatBtns}</div>
+    </div>
+    <div class="prop-section" style="padding-bottom:14px">
+      <div class="prop-section-title">Inhalt</div>
+      ${fields}
+    </div>
+  `;
+}
+
+/* --- ACTIONS --- */
+function selectSlide(i) { current = i; renderAll(); }
+function navigate(dir) { const n = current+dir; if(n>=0&&n<slides.length){ current=n; renderAll(); } }
+function setType(t) { slides[current].type=t; renderAll(); }
+function setColor(c) { slides[current].color=c; renderAll(); }
+function setRatio(r) { ratio=r; renderAll(); }
+function updateField(k,v) { slides[current][k]=v; renderCanvas(); renderSidebar(); }
+
+function addSlide() {
+  const color = s().color;
+  slides.push({ id:nextId++, type:'content', color, title:'Neue Folie', eyebrow:String(slides.length+1).padStart(2,'0'), body:'Dein Inhalt hier…', subtitle:'' });
+  current = slides.length-1;
+  renderAll();
+}
+
+function deleteSlide(e, i) {
+  e.stopPropagation();
+  if(slides.length<=1) return;
+  slides.splice(i,1);
+  if(current>=slides.length) current=slides.length-1;
+  renderAll();
+}
+
+function moveSlide(e, i, dir) {
+  e.stopPropagation();
+  const j = i+dir;
+  if(j<0||j>=slides.length) return;
+  [slides[i],slides[j]] = [slides[j],slides[i]];
+  if(current===i) current=j;
+  else if(current===j) current=i;
+  renderAll();
+}
+
+/* --- EXPORT --- */
+function openExport() { document.getElementById('export-modal').style.display='flex'; }
+function closeExport(e) { if(!e||e.target===document.getElementById('export-modal')){ document.getElementById('export-modal').style.display='none'; } }
+
+function exportJSON() {
+  const data = JSON.stringify({ slides, ratio }, null, 2);
+  download('carousel.json', 'application/json', data);
+  showToast('Projekt gespeichert ✓');
+  closeExport();
+}
+
+function importJSON() {
+  document.getElementById('file-input').click();
+  closeExport();
+}
+
+function loadJSON(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if(d.slides) { slides = d.slides; ratio = d.ratio||ratio; current=0; renderAll(); showToast('Projekt geladen ✓'); }
+    } catch { showToast('Ungültige Datei'); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+function exportPNG() {
+  closeExport();
+  showToast('PNG-Export: Browser-Drucken nutzen (Strg+P → Als PDF) oder Screenshot-Tool');
+}
+
+function exportHTML() {
+  const r = RATIOS[ratio];
+  const slidesHTML = slides.map((sl,i) =>
+    `<div class="carousel-slide" style="display:${i===0?'flex':'none'}; flex-direction:column; width:${r.w}px; height:${r.h}px;">\n  ${buildSlide(sl,r.w,r.h,i+1,slides.length)}\n</div>`
+  ).join('\n');
+  const code = `<!-- Carousel einbetten -->\n<div id="carousel" style="position:relative; display:inline-block;">\n${slidesHTML}\n  <button onclick="prevSlide()" style="position:absolute;left:-44px;top:50%;transform:translateY(-50%);border-radius:50%;width:36px;height:36px;cursor:pointer;">←</button>\n  <button onclick="nextSlide()" style="position:absolute;right:-44px;top:50%;transform:translateY(-50%);border-radius:50%;width:36px;height:36px;cursor:pointer;">→</button>\n</div>\n<script>\nvar ci=0, sl=document.querySelectorAll('.carousel-slide');\nfunction show(i){sl.forEach((s,j)=>s.style.display=j===i?'flex':'none');ci=i;}\nfunction prevSlide(){if(ci>0)show(ci-1);}\nfunction nextSlide(){if(ci<sl.length-1)show(ci+1);}\n<\/script>`;
+  download('carousel.html', 'text/html', code);
+  showToast('HTML exportiert ✓');
+}
+
+function download(name, type, content) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type}));
+  a.download = name; a.click();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+renderAll();
+</script>
+</body>
+</html>
