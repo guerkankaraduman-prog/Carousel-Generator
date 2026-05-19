@@ -41,7 +41,6 @@
             min-height: 100vh;
         }
 
-        /* ====== HEADER ====== */
         .header {
             grid-column: 1 / -1;
             text-align: center;
@@ -66,7 +65,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ====== CONTROL PANEL ====== */
         .control-panel {
             background: rgba(22, 33, 62, 0.8);
             border: 1px solid var(--border);
@@ -75,6 +73,8 @@
             backdrop-filter: blur(10px);
             box-shadow: var(--shadow);
             animation: slideLeft 0.6s ease-out 0.1s both;
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
         }
 
         .section {
@@ -109,7 +109,6 @@
             border-radius: 2px;
         }
 
-        /* ====== FORM ELEMENTS ====== */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -126,6 +125,7 @@
         input[type="url"],
         input[type="number"],
         input[type="color"],
+        input[type="file"],
         select,
         textarea {
             width: 100%;
@@ -144,6 +144,7 @@
         input[type="url"]:focus,
         input[type="number"]:focus,
         input[type="color"]:focus,
+        input[type="file"]:focus,
         select:focus,
         textarea:focus {
             background: rgba(255, 255, 255, 0.1);
@@ -154,7 +155,6 @@
         textarea {
             resize: vertical;
             min-height: 80px;
-            font-family: inherit;
         }
 
         input[type="color"] {
@@ -163,7 +163,23 @@
             height: 45px;
         }
 
-        /* ====== BUTTON STYLES ====== */
+        input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, var(--accent), #00a8cc);
+            color: var(--primary);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+        }
+
         button {
             padding: 0.85rem 1.5rem;
             border: none;
@@ -210,6 +226,10 @@
             box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
         }
 
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-light);
@@ -249,7 +269,6 @@
             z-index: 1;
         }
 
-        /* ====== LAYOUT GRID ====== */
         .layout-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -280,12 +299,11 @@
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
         }
 
-        /* ====== SLIDE LIST ====== */
         .slide-list {
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
             padding-right: 0.5rem;
         }
@@ -328,6 +346,7 @@
 
         .slide-item-info {
             text-align: left;
+            flex: 1;
         }
 
         .slide-item-title {
@@ -342,7 +361,6 @@
             color: var(--text-muted);
         }
 
-        /* ====== PREVIEW AREA ====== */
         .preview-area {
             background: rgba(22, 33, 62, 0.8);
             border: 1px solid var(--border);
@@ -351,6 +369,8 @@
             backdrop-filter: blur(10px);
             box-shadow: var(--shadow);
             animation: slideRight 0.6s ease-out 0.2s both;
+            display: flex;
+            flex-direction: column;
         }
 
         .preview-title {
@@ -363,7 +383,6 @@
             letter-spacing: 1px;
         }
 
-        /* ====== CAROUSEL ====== */
         .carousel-wrapper {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -373,6 +392,7 @@
             position: relative;
             border: 1px solid var(--border);
             margin-bottom: 2rem;
+            flex: 1;
         }
 
         .carousel {
@@ -397,11 +417,15 @@
             opacity: 1;
         }
 
-        /* Layout: Full Image */
         .slide-full-image {
             background-size: cover;
             background-position: center;
             position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .slide-full-image::after {
@@ -411,53 +435,32 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), transparent);
+            background: inherit;
+            z-index: 1;
         }
 
-        /* Layout: Image Left */
-        .slide-image-left {
-            display: flex;
-            align-items: stretch;
-            position: relative;
-        }
-
-        .slide-image-left .slide-image {
-            flex: 1;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .slide-image-left .slide-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 3rem;
-        }
-
-        /* Layout: Image Right */
+        .slide-image-left,
         .slide-image-right {
             display: flex;
             align-items: stretch;
-            flex-direction: row-reverse;
             position: relative;
         }
 
-        .slide-image-right .slide-image {
+        .slide-image-right {
+            flex-direction: row-reverse;
+        }
+
+        .slide-image {
             flex: 1;
             background-size: cover;
             background-position: center;
         }
 
-        .slide-image-right .slide-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 3rem;
+        .slide-content {
+            z-index: 2;
+            position: relative;
         }
 
-        /* Layout: Text Only */
         .slide-text-only {
             display: flex;
             align-items: center;
@@ -470,10 +473,13 @@
             text-align: center;
         }
 
-        /* Slide Content */
-        .slide-content {
-            position: relative;
-            z-index: 2;
+        .slide-image-left .slide-content,
+        .slide-image-right .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
         }
 
         .slide-content h2 {
@@ -507,7 +513,6 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* ====== CAROUSEL CONTROLS ====== */
         .carousel-controls {
             position: absolute;
             bottom: 1.5rem;
@@ -534,6 +539,10 @@
             border: 2px solid transparent;
         }
 
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
         .dot.active {
             background: var(--accent);
             width: 30px;
@@ -554,6 +563,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
         }
 
         .carousel-btn:hover {
@@ -561,7 +571,10 @@
             transform: scale(1.1);
         }
 
-        /* ====== STATS ====== */
+        .carousel-btn:active {
+            transform: scale(0.95);
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -591,7 +604,43 @@
             text-transform: uppercase;
         }
 
-        /* ====== ANIMATIONS ====== */
+        .export-section {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid var(--accent-warm);
+            color: var(--accent-warm);
+        }
+
+        .small-text {
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            display: block;
+            font-size: 0.85rem;
+        }
+
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -625,53 +674,6 @@
             }
         }
 
-        /* ====== MODAL ====== */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: var(--secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: var(--shadow);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            color: var(--accent);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* ====== RESPONSIVE ====== */
         @media (max-width: 1200px) {
             .container {
                 grid-template-columns: 1fr;
@@ -679,7 +681,6 @@
 
             .control-panel {
                 max-height: 600px;
-                overflow-y: auto;
             }
         }
 
@@ -705,6 +706,10 @@
             .slide-image-right .slide-content {
                 padding: 2rem;
             }
+
+            .carousel-wrapper {
+                aspect-ratio: 9 / 16;
+            }
         }
     </style>
 </head>
@@ -718,6 +723,9 @@
 
         <!-- CONTROL PANEL -->
         <div class="control-panel">
+            <!-- Alert Messages -->
+            <div id="alertBox" class="alert"></div>
+
             <!-- Layout Section -->
             <div class="section">
                 <div class="section-title">Layout</div>
@@ -741,25 +749,25 @@
                 </div>
             </div>
 
-            <!-- Farben Section -->
+            <!-- Colors Section -->
             <div class="section">
                 <div class="section-title">Farben & Stil</div>
                 <div class="form-group">
-                    <label>Hintergrund Farbe</label>
+                    <label for="bgColor">Hintergrund Farbe</label>
                     <input type="color" id="bgColor" value="#1a1a2e">
                 </div>
                 <div class="form-group">
-                    <label>Text Farbe</label>
+                    <label for="textColor">Text Farbe</label>
                     <input type="color" id="textColor" value="#ecf0f1">
                 </div>
                 <div class="form-group">
-                    <label>Button Farbe</label>
+                    <label for="btnColor">Button Farbe</label>
                     <input type="color" id="btnColor" value="#00d4ff">
                 </div>
                 <div class="form-group">
-                    <label>Overlay Opazität</label>
+                    <label for="overlayOpacity">Overlay Opazität</label>
                     <input type="number" id="overlayOpacity" min="0" max="100" value="40" step="10">
-                    <small style="color: var(--text-muted); margin-top: 0.3rem; display: block;">0-100%</small>
+                    <span class="small-text">0-100%</span>
                 </div>
             </div>
 
@@ -767,32 +775,32 @@
             <div class="section">
                 <div class="section-title">Folie Bearbeiten</div>
                 <div class="form-group">
-                    <label>Titel</label>
+                    <label for="slideTitle">Titel</label>
                     <input type="text" id="slideTitle" placeholder="Folientitel eingeben...">
                 </div>
                 <div class="form-group">
-                    <label>Beschreibung</label>
+                    <label for="slideDescription">Beschreibung</label>
                     <textarea id="slideDescription" placeholder="Folienbeschreibung eingeben..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Button Text</label>
+                    <label for="slideBtnText">Button Text</label>
                     <input type="text" id="slideBtnText" placeholder="z.B. 'Mehr erfahren'">
                 </div>
                 <div class="form-group">
-                    <label>Button Link</label>
+                    <label for="slideBtnLink">Button Link</label>
                     <input type="url" id="slideBtnLink" placeholder="https://example.com">
                 </div>
                 <div class="form-group">
-                    <label>Bild hochladen</label>
+                    <label for="slideImage">Bild hochladen</label>
                     <input type="file" id="slideImage" accept="image/*">
-                    <small style="color: var(--text-muted); margin-top: 0.3rem; display: block;">JPG, PNG, WebP</small>
+                    <span class="small-text">JPG, PNG, WebP bis 5MB</span>
                 </div>
             </div>
 
             <!-- Slides Section -->
             <div class="section">
                 <div class="section-title">Folien</div>
-                <button class="btn-primary btn-small" onclick="addSlide()">+ Neue Folie</button>
+                <button class="btn-primary btn-small" onclick="app.addSlide()">+ Neue Folie</button>
                 <div class="slide-list" id="slideList"></div>
             </div>
 
@@ -813,395 +821,497 @@
         <div class="preview-area">
             <div class="preview-title">Live Preview</div>
             <div class="carousel-wrapper">
-                <div class="carousel" id="carousel">
-                    <!-- Slides werden hier eingefügt -->
-                </div>
+                <div class="carousel" id="carousel"></div>
                 <div class="carousel-controls">
-                    <button class="carousel-btn" onclick="prevSlide()">❮</button>
+                    <button class="carousel-btn" onclick="app.prevSlide()">❮</button>
                     <div class="carousel-dots" id="carouselDots"></div>
-                    <button class="carousel-btn" onclick="nextSlide()">❯</button>
+                    <button class="carousel-btn" onclick="app.nextSlide()">❯</button>
                 </div>
             </div>
 
             <!-- Export Section -->
-            <div class="section" style="background: rgba(0, 212, 255, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.2);">
+            <div class="section export-section">
                 <div class="section-title" style="border: none; margin-bottom: 1rem;">Export</div>
-                <button class="btn-primary btn-small" onclick="downloadCarousel()">📥 Als HTML herunterladen</button>
-                <button class="btn-secondary btn-small" onclick="copyToClipboard()">📋 Code kopieren</button>
+                <button class="btn-primary btn-small" onclick="app.downloadCarousel()">📥 Als HTML herunterladen</button>
+                <button class="btn-secondary btn-small" onclick="app.copyToClipboard()">📋 Code kopieren</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ====== STATE MANAGEMENT ======
-        let slides = [
-            {
-                id: 1,
-                title: 'Willkommen zu unserem Carousel',
-                description: 'Erstelle wunderschöne Carousels mit dieser professionellen Generator-App',
-                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2300d4ff;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ff00ff;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="1200" height="800"/%3E%3C/svg%3E',
-                btnText: 'Jetzt starten',
-                btnLink: '#',
-            }
-        ];
-
-        let currentLayout = 'full-image';
-        let currentSlideId = 1;
-        let nextSlideId = 2;
-
-        // ====== INITIALIZATION ======
-        function init() {
-            renderSlideList();
-            renderCarousel();
-            loadSlideData();
-        }
-
-        // ====== SLIDE MANAGEMENT ======
-        function addSlide() {
-            const newSlide = {
-                id: nextSlideId++,
-                title: `Folie ${nextSlideId}`,
-                description: 'Folienbeschreibung eingeben',
-                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23ff6b6b;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ffa500;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad2)" width="1200" height="800"/%3E%3C/svg%3E',
-                btnText: '',
-                btnLink: '',
-            };
-            slides.push(newSlide);
-            currentSlideId = newSlide.id;
-            renderSlideList();
-            renderCarousel();
-            loadSlideData();
-            updateStats();
-        }
-
-        function deleteSlide(id) {
-            if (slides.length <= 1) {
-                alert('Du musst mindestens eine Folie haben!');
-                return;
-            }
-            slides = slides.filter(s => s.id !== id);
-            if (currentSlideId === id) {
-                currentSlideId = slides[0].id;
-            }
-            renderSlideList();
-            renderCarousel();
-            loadSlideData();
-            updateStats();
-        }
-
-        function selectSlide(id) {
-            currentSlideId = id;
-            renderSlideList();
-            loadSlideData();
-        }
-
-        // ====== DATA LOADING ======
-        function loadSlideData() {
-            const slide = slides.find(s => s.id === currentSlideId);
-            if (slide) {
-                document.getElementById('slideTitle').value = slide.title || '';
-                document.getElementById('slideDescription').value = slide.description || '';
-                document.getElementById('slideBtnText').value = slide.btnText || '';
-                document.getElementById('slideBtnLink').value = slide.btnLink || '';
-            }
-        }
-
-        function saveSlideData() {
-            const slide = slides.find(s => s.id === currentSlideId);
-            if (slide) {
-                slide.title = document.getElementById('slideTitle').value;
-                slide.description = document.getElementById('slideDescription').value;
-                slide.btnText = document.getElementById('slideBtnText').value;
-                slide.btnLink = document.getElementById('slideBtnLink').value;
-                renderCarousel();
-            }
-        }
-
-        // ====== IMAGE HANDLING ======
-        document.getElementById('slideImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const slide = slides.find(s => s.id === currentSlideId);
-                    if (slide) {
-                        slide.image = event.target.result;
-                        renderCarousel();
+        // ====== CAROUSEL GENERATOR APP ======
+        const app = (() => {
+            // STATE
+            const state = {
+                slides: [
+                    {
+                        id: 1,
+                        title: 'Willkommen zu unserem Carousel',
+                        description: 'Erstelle wunderschöne Carousels mit dieser professionellen Generator-App',
+                        image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2300d4ff;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ff00ff;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="1200" height="800"/%3E%3C/svg%3E',
+                        btnText: 'Jetzt starten',
+                        btnLink: '#',
                     }
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+                ],
+                currentLayout: 'full-image',
+                currentSlideId: 1,
+                nextSlideId: 2,
+                carouselIndex: 0,
+            };
 
-        // ====== COLOR HANDLING ======
-        document.getElementById('bgColor').addEventListener('change', updateCarouselColors);
-        document.getElementById('textColor').addEventListener('change', updateCarouselColors);
-        document.getElementById('btnColor').addEventListener('change', updateCarouselColors);
-        document.getElementById('overlayOpacity').addEventListener('change', updateCarouselColors);
+            // DOM ELEMENTS
+            const dom = {
+                carousel: document.getElementById('carousel'),
+                carouselDots: document.getElementById('carouselDots'),
+                slideList: document.getElementById('slideList'),
+                slideTitle: document.getElementById('slideTitle'),
+                slideDescription: document.getElementById('slideDescription'),
+                slideBtnText: document.getElementById('slideBtnText'),
+                slideBtnLink: document.getElementById('slideBtnLink'),
+                slideImage: document.getElementById('slideImage'),
+                bgColor: document.getElementById('bgColor'),
+                textColor: document.getElementById('textColor'),
+                btnColor: document.getElementById('btnColor'),
+                overlayOpacity: document.getElementById('overlayOpacity'),
+                totalSlides: document.getElementById('totalSlides'),
+                currentSlide: document.getElementById('currentSlide'),
+                alertBox: document.getElementById('alertBox'),
+            };
 
-        function updateCarouselColors() {
-            renderCarousel();
-        }
+            // UTILITIES
+            const util = {
+                showAlert(message, type = 'success') {
+                    dom.alertBox.textContent = message;
+                    dom.alertBox.className = `alert show alert-${type}`;
+                    setTimeout(() => {
+                        dom.alertBox.classList.remove('show');
+                    }, 3000);
+                },
 
-        // ====== LAYOUT SELECTION ======
-        document.querySelectorAll('.layout-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
-                this.classList.add('active');
-                currentLayout = this.getAttribute('data-layout');
-                renderCarousel();
-            });
-        });
+                getCurrentSlide() {
+                    return state.slides.find(s => s.id === state.currentSlideId);
+                },
 
-        // ====== INPUT LISTENERS ======
-        document.getElementById('slideTitle').addEventListener('change', saveSlideData);
-        document.getElementById('slideDescription').addEventListener('change', saveSlideData);
-        document.getElementById('slideBtnText').addEventListener('change', saveSlideData);
-        document.getElementById('slideBtnLink').addEventListener('change', saveSlideData);
+                validateImageFile(file) {
+                    const maxSize = 5 * 1024 * 1024;
+                    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!validTypes.includes(file.type)) {
+                        throw new Error('Nur JPG, PNG und WebP sind erlaubt');
+                    }
+                    if (file.size > maxSize) {
+                        throw new Error('Datei darf maximal 5MB groß sein');
+                    }
+                    return true;
+                },
 
-        // ====== RENDERING ======
-        function renderSlideList() {
-            const slideList = document.getElementById('slideList');
-            slideList.innerHTML = '';
-            slides.forEach((slide, index) => {
-                const slideItem = document.createElement('div');
-                slideItem.className = `slide-item ${slide.id === currentSlideId ? 'active' : ''}`;
-                slideItem.innerHTML = `
-                    <div class="slide-item-info" onclick="selectSlide(${slide.id})">
-                        <div class="slide-item-title">${slide.title || 'Ohne Titel'}</div>
-                        <div class="slide-item-number">Folie ${index + 1}</div>
-                    </div>
-                    <button class="btn-danger" onclick="deleteSlide(${slide.id})">✕</button>
-                `;
-                slideList.appendChild(slideItem);
-            });
-            updateStats();
-        }
+                sanitizeHTML(text) {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                },
+            };
 
-        function renderCarousel() {
-            const carousel = document.getElementById('carousel');
-            const dotsContainer = document.getElementById('carouselDots');
-            const bgColor = document.getElementById('bgColor').value;
-            const textColor = document.getElementById('textColor').value;
-            const btnColor = document.getElementById('btnColor').value;
-            const overlayOpacity = document.getElementById('overlayOpacity').value / 100;
+            // SLIDE MANAGEMENT
+            const slideManager = {
+                add() {
+                    const newSlide = {
+                        id: state.nextSlideId++,
+                        title: `Folie ${state.nextSlideId}`,
+                        description: 'Folienbeschreibung eingeben',
+                        image: `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"%3E%3Cdefs%3E%3ClinearGradient id="grad${state.nextSlideId}" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23ff6b6b;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23ffa500;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad${state.nextSlideId})" width="1200" height="800"/%3E%3C/svg%3E`,
+                        btnText: '',
+                        btnLink: '',
+                    };
+                    state.slides.push(newSlide);
+                    state.currentSlideId = newSlide.id;
+                    util.showAlert('Neue Folie hinzugefügt ✓', 'success');
+                    return newSlide;
+                },
 
-            carousel.innerHTML = '';
-            dotsContainer.innerHTML = '';
+                delete(id) {
+                    if (state.slides.length <= 1) {
+                        util.showAlert('Du musst mindestens eine Folie haben!', 'error');
+                        return false;
+                    }
+                    state.slides = state.slides.filter(s => s.id !== id);
+                    if (state.currentSlideId === id) {
+                        state.currentSlideId = state.slides[0].id;
+                    }
+                    util.showAlert('Folie gelöscht', 'success');
+                    return true;
+                },
 
-            slides.forEach((slide, index) => {
-                // Create slide element
-                const slideEl = document.createElement('div');
-                slideEl.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+                select(id) {
+                    state.currentSlideId = id;
+                },
 
-                // Apply layout
-                let layoutClass = `slide-${currentLayout}`;
-                slideEl.classList.add(layoutClass);
+                update(id, updates) {
+                    const slide = state.slides.find(s => s.id === id);
+                    if (slide) {
+                        Object.assign(slide, updates);
+                    }
+                },
+            };
 
-                // Build content
-                let slideHTML = '';
+            // RENDERING
+            const renderer = {
+                carousel() {
+                    try {
+                        const { slides, currentLayout } = state;
+                        const { bgColor, textColor, btnColor, overlayOpacity } = {
+                            bgColor: dom.bgColor.value,
+                            textColor: dom.textColor.value,
+                            btnColor: dom.btnColor.value,
+                            overlayOpacity: dom.overlayOpacity.value / 100,
+                        };
 
-                if (currentLayout === 'full-image') {
-                    slideHTML = `
-                        <div class="slide-full-image" style="background-image: url('${slide.image}')">
-                            <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
-                                <h2>${slide.title}</h2>
-                                <p>${slide.description}</p>
-                                ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
+                        dom.carousel.innerHTML = '';
+                        dom.carouselDots.innerHTML = '';
+
+                        slides.forEach((slide, index) => {
+                            const slideEl = this.createSlideElement(
+                                slide,
+                                index,
+                                currentLayout,
+                                { bgColor, textColor, btnColor, overlayOpacity }
+                            );
+                            dom.carousel.appendChild(slideEl);
+
+                            const dot = this.createDot(index);
+                            dom.carouselDots.appendChild(dot);
+                        });
+
+                        this.updateCarouselDisplay();
+                    } catch (error) {
+                        util.showAlert(`Fehler beim Rendern: ${error.message}`, 'error');
+                        console.error(error);
+                    }
+                },
+
+                createSlideElement(slide, index, layout, colors) {
+                    const { bgColor, textColor, btnColor, overlayOpacity } = colors;
+                    const slideEl = document.createElement('div');
+                    slideEl.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+                    slideEl.dataset.slideIndex = index;
+
+                    const btnHTML = slide.btnText
+                        ? `<a href="${util.sanitizeHTML(slide.btnLink || '#')}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${util.sanitizeHTML(slide.btnText)}</a>`
+                        : '';
+
+                    const contentHTML = `
+                        <h2>${util.sanitizeHTML(slide.title)}</h2>
+                        <p>${util.sanitizeHTML(slide.description)}</p>
+                        ${btnHTML}
+                    `;
+
+                    switch (layout) {
+                        case 'full-image':
+                            slideEl.innerHTML = `
+                                <div class="slide-full-image" style="background-image: url('${slide.image}')">
+                                    <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
+                                        ${contentHTML}
+                                    </div>
+                                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
+                                </div>
+                            `;
+                            break;
+
+                        case 'image-left':
+                        case 'image-right':
+                            slideEl.classList.add(`slide-${layout}`);
+                            slideEl.innerHTML = `
+                                <div class="slide-image" style="background-image: url('${slide.image}');"></div>
+                                <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
+                                    ${contentHTML}
+                                </div>
+                            `;
+                            break;
+
+                        case 'text-only':
+                            slideEl.classList.add('slide-text-only');
+                            slideEl.innerHTML = `
+                                <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
+                                    ${contentHTML}
+                                </div>
+                            `;
+                            break;
+                    }
+
+                    return slideEl;
+                },
+
+                createDot(index) {
+                    const dot = document.createElement('div');
+                    dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                    dot.onclick = () => app.goToSlide(index);
+                    return dot;
+                },
+
+                slideList() {
+                    const list = dom.slideList;
+                    list.innerHTML = '';
+                    state.slides.forEach((slide, index) => {
+                        const item = document.createElement('div');
+                        item.className = `slide-item ${slide.id === state.currentSlideId ? 'active' : ''}`;
+                        item.innerHTML = `
+                            <div class="slide-item-info" onclick="app.selectSlide(${slide.id})">
+                                <div class="slide-item-title">${util.sanitizeHTML(slide.title || 'Ohne Titel')}</div>
+                                <div class="slide-item-number">Folie ${index + 1}</div>
                             </div>
-                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
-                        </div>
-                    `;
-                } else if (currentLayout === 'image-left' || currentLayout === 'image-right') {
-                    slideHTML = `
-                        <div class="slide-image" style="background-image: url('${slide.image}');"></div>
-                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
-                            <h2>${slide.title}</h2>
-                            <p>${slide.description}</p>
-                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
-                        </div>
-                    `;
-                } else if (currentLayout === 'text-only') {
-                    slideHTML = `
-                        <div class="slide-content" style="background: ${bgColor}; color: ${textColor};">
-                            <h2>${slide.title}</h2>
-                            <p>${slide.description}</p>
-                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${slide.btnText}</a>` : ''}
-                        </div>
-                    `;
-                }
+                            <button class="btn-danger" onclick="app.deleteSlide(${slide.id})">✕</button>
+                        `;
+                        list.appendChild(item);
+                    });
+                },
 
-                slideEl.innerHTML = slideHTML;
-                carousel.appendChild(slideEl);
+                updateCarouselDisplay() {
+                    const slideEls = document.querySelectorAll('.carousel-slide');
+                    const dots = document.querySelectorAll('.dot');
 
-                // Create dot
-                const dot = document.createElement('div');
-                dot.className = `dot ${index === 0 ? 'active' : ''}`;
-                dot.onclick = () => goToSlide(index);
-                dotsContainer.appendChild(dot);
-            });
-        }
+                    slideEls.forEach((el, i) => el.classList.remove('active'));
+                    dots.forEach((dot, i) => dot.classList.remove('active'));
 
-        function updateStats() {
-            document.getElementById('totalSlides').textContent = slides.length;
-            const currentIndex = slides.findIndex(s => s.id === currentSlideId);
-            document.getElementById('currentSlide').textContent = currentIndex + 1;
-        }
+                    if (slideEls[state.carouselIndex]) {
+                        slideEls[state.carouselIndex].classList.add('active');
+                    }
+                    if (dots[state.carouselIndex]) {
+                        dots[state.carouselIndex].classList.add('active');
+                    }
+                },
+            };
 
-        // ====== CAROUSEL NAVIGATION ======
-        let currentIndex = 0;
+            // EVENT HANDLERS
+            const events = {
+                init() {
+                    // Layout Selection
+                    document.querySelectorAll('.layout-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
+                            option.classList.add('active');
+                            state.currentLayout = option.dataset.layout;
+                            renderer.carousel();
+                        });
+                    });
 
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
-            updateCarouselDisplay();
-        }
+                    // Color Inputs
+                    [dom.bgColor, dom.textColor, dom.btnColor, dom.overlayOpacity].forEach(input => {
+                        input.addEventListener('change', () => renderer.carousel());
+                    });
 
-        function prevSlide() {
-            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-            updateCarouselDisplay();
-        }
+                    // Slide Content Inputs
+                    [dom.slideTitle, dom.slideDescription, dom.slideBtnText, dom.slideBtnLink].forEach(input => {
+                        input.addEventListener('change', () => {
+                            slideManager.update(state.currentSlideId, {
+                                title: dom.slideTitle.value,
+                                description: dom.slideDescription.value,
+                                btnText: dom.slideBtnText.value,
+                                btnLink: dom.slideBtnLink.value,
+                            });
+                            renderer.carousel();
+                            renderer.slideList();
+                        });
+                    });
 
-        function goToSlide(index) {
-            currentIndex = index;
-            updateCarouselDisplay();
-        }
+                    // Image Upload
+                    dom.slideImage.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
 
-        function updateCarouselDisplay() {
-            const slideElements = document.querySelectorAll('.carousel-slide');
-            const dots = document.querySelectorAll('.dot');
+                        try {
+                            util.validateImageFile(file);
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                slideManager.update(state.currentSlideId, {
+                                    image: event.target.result,
+                                });
+                                renderer.carousel();
+                                util.showAlert('Bild hochgeladen ✓', 'success');
+                            };
+                            reader.onerror = () => {
+                                util.showAlert('Fehler beim Lesen der Datei', 'error');
+                            };
+                            reader.readAsDataURL(file);
+                        } catch (error) {
+                            util.showAlert(error.message, 'error');
+                        }
+                    });
+                },
 
-            slideElements.forEach((slide, index) => {
-                slide.classList.remove('active');
-                dots[index].classList.remove('active');
-            });
+                loadSlideData() {
+                    const slide = util.getCurrentSlide();
+                    if (slide) {
+                        dom.slideTitle.value = slide.title || '';
+                        dom.slideDescription.value = slide.description || '';
+                        dom.slideBtnText.value = slide.btnText || '';
+                        dom.slideBtnLink.value = slide.btnLink || '';
+                    }
+                },
 
-            slideElements[currentIndex].classList.add('active');
-            dots[currentIndex].classList.add('active');
-        }
+                updateStats() {
+                    dom.totalSlides.textContent = state.slides.length;
+                    const currentIndex = state.slides.findIndex(s => s.id === state.currentSlideId);
+                    dom.currentSlide.textContent = currentIndex + 1;
+                },
+            };
 
-        // ====== EXPORT FUNCTIONS ======
-        function downloadCarousel() {
-            const html = generateCarouselHTML();
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'carousel.html';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
+            // PUBLIC API
+            return {
+                init() {
+                    events.init();
+                    renderer.carousel();
+                    renderer.slideList();
+                    events.loadSlideData();
+                    events.updateStats();
+                },
 
-        function copyToClipboard() {
-            const html = generateCarouselHTML();
-            navigator.clipboard.writeText(html).then(() => {
-                alert('Code in Zwischenablage kopiert!');
-            });
-        }
+                addSlide() {
+                    slideManager.add();
+                    renderer.carousel();
+                    renderer.slideList();
+                    events.loadSlideData();
+                    events.updateStats();
+                },
 
-        function generateCarouselHTML() {
-            const bgColor = document.getElementById('bgColor').value;
-            const textColor = document.getElementById('textColor').value;
-            const btnColor = document.getElementById('btnColor').value;
-            const overlayOpacity = document.getElementById('overlayOpacity').value / 100;
+                deleteSlide(id) {
+                    if (slideManager.delete(id)) {
+                        renderer.carousel();
+                        renderer.slideList();
+                        events.loadSlideData();
+                        events.updateStats();
+                    }
+                },
 
-            // Generate Pinterest Pin Images (1000x1500px optimal size)
-            const pinterestPins = slides.map((slide, index) => {
-                return `
-    <img src="${slide.image}" alt="${slide.title}" class="pinterest-pin" data-pin="${index}">`;
-            }).join('');
+                selectSlide(id) {
+                    slideManager.select(id);
+                    renderer.slideList();
+                    events.loadSlideData();
+                },
 
-            // Generate Pinterest Descriptions
-            const pinDescriptions = slides.map((slide, index) => {
-                return `${slide.title} - ${slide.description}`.substring(0, 500);
-            });
+                nextSlide() {
+                    state.carouselIndex = (state.carouselIndex + 1) % state.slides.length;
+                    renderer.updateCarouselDisplay();
+                },
 
-            let slidesHTML = slides.map((slide, index) => {
-                let slideHTML = '';
-               
-                if (currentLayout === 'full-image') {
-                    slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
+                prevSlide() {
+                    state.carouselIndex = (state.carouselIndex - 1 + state.slides.length) % state.slides.length;
+                    renderer.updateCarouselDisplay();
+                },
+
+                goToSlide(index) {
+                    state.carouselIndex = index;
+                    renderer.updateCarouselDisplay();
+                },
+
+                downloadCarousel() {
+                    try {
+                        const html = this.generateHTML();
+                        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `carousel-${new Date().getTime()}.html`;
+                        link.click();
+                        URL.revokeObjectURL(url);
+                        util.showAlert('Carousel heruntergeladen ✓', 'success');
+                    } catch (error) {
+                        util.showAlert(`Fehler beim Download: ${error.message}`, 'error');
+                    }
+                },
+
+                copyToClipboard() {
+                    try {
+                        const html = this.generateHTML();
+                        navigator.clipboard.writeText(html).then(() => {
+                            util.showAlert('Code in Zwischenablage kopiert ✓', 'success');
+                        }).catch(() => {
+                            util.showAlert('Fehler beim Kopieren', 'error');
+                        });
+                    } catch (error) {
+                        util.showAlert(`Fehler: ${error.message}`, 'error');
+                    }
+                },
+
+                generateHTML() {
+                    const { bgColor, textColor, btnColor, overlayOpacity } = {
+                        bgColor: dom.bgColor.value,
+                        textColor: dom.textColor.value,
+                        btnColor: dom.btnColor.value,
+                        overlayOpacity: dom.overlayOpacity.value / 100,
+                    };
+
+                    const slidesHTML = state.slides.map((slide, index) => {
+                        const btnHTML = slide.btnText
+                            ? `<a href="${util.sanitizeHTML(slide.btnLink || '#')}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};">${util.sanitizeHTML(slide.btnText)}</a>`
+                            : '';
+
+                        const contentHTML = `
+                            <h2>${util.sanitizeHTML(slide.title)}</h2>
+                            <p>${util.sanitizeHTML(slide.description)}</p>
+                            ${btnHTML}
+                        `;
+
+                        let slideHTML = '';
+
+                        switch (state.currentLayout) {
+                            case 'full-image':
+                                slideHTML = `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
                         <div class="slide-full-image" style="background-image: url('${slide.image}')">
                             <div class="slide-content" style="color: ${textColor}; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
-                                <h2>${slide.title}</h2>
-                                <p>${slide.description}</p>
-                                ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor};" data-pin-id="${index}">${slide.btnText}</a>` : ''}
+                                ${contentHTML}
                             </div>
                             <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, ${overlayOpacity}); z-index: 1;"></div>
                         </div>
                     </div>`;
-                } else if (currentLayout === 'image-left' || currentLayout === 'image-right') {
-                    slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
+                                break;
+
+                            case 'image-left':
+                            case 'image-right':
+                                slideHTML = `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" style="${state.currentLayout === 'image-right' ? 'flex-direction: row-reverse;' : ''}">
                         <div class="slide-image" style="background-image: url('${slide.image}'); flex: 1;"></div>
                         <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3rem;">
-                            <h2>${slide.title}</h2>
-                            <p>${slide.description}</p>
-                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; width: fit-content;" data-pin-id="${index}">${slide.btnText}</a>` : ''}
+                            ${contentHTML}
                         </div>
                     </div>`;
-                } else if (currentLayout === 'text-only') {
-                    slideHTML = `
-                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
+                                break;
+
+                            case 'text-only':
+                                slideHTML = `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}" style="width: 100%;">
                         <div class="slide-content" style="background: ${bgColor}; color: ${textColor}; width: 100%; text-align: center;">
-                            <h2>${slide.title}</h2>
-                            <p>${slide.description}</p>
-                            ${slide.btnText ? `<a href="${slide.btnLink || '#'}" class="slide-cta" style="background: ${btnColor}; color: ${bgColor}; display: inline-block; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600;" data-pin-id="${index}">${slide.btnText}</a>` : ''}
+                            ${contentHTML}
                         </div>
                     </div>`;
-                }
+                                break;
+                        }
 
-                return slideHTML;
-            }).join('');
+                        return slideHTML;
+                    }).join('');
 
-            const dotsHTML = slides.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
+                    const dotsHTML = state.slides.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
 
-            const firstSlideTitle = slides[0]?.title || 'Carousel';
-            const firstSlideDesc = slides[0]?.description || 'Erstellt mit Carousel Generator Pro';
-            const pinPageUrl = typeof window !== 'undefined' ? window.location.href : 'https://example.com';
+                    const firstSlide = state.slides[0];
+                    const pinPageUrl = typeof window !== 'undefined' ? window.location.href : 'https://example.com';
 
-            return `<!DOCTYPE html>
+                    return `<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="${firstSlideDesc.substring(0, 155)}">
-    <meta name="keywords" content="carousel, slider, interactive, presentation">
-   
-    <!-- Pinterest Rich Pins Meta Tags -->
+    <meta name="description" content="${util.sanitizeHTML((firstSlide.description || '').substring(0, 155))}">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="${firstSlideTitle}">
-    <meta property="og:description" content="${firstSlideDesc}">
-    <meta property="og:image" content="${slides[0]?.image || ''}">
+    <meta property="og:title" content="${util.sanitizeHTML(firstSlide.title)}">
+    <meta property="og:description" content="${util.sanitizeHTML(firstSlide.description)}">
+    <meta property="og:image" content="${firstSlide.image}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="628">
-    <meta property="og:url" content="${pinPageUrl}">
-   
-    <!-- Pinterest Specific -->
     <meta name="pinterest-rich-pin" content="true">
-    <meta name="pinterest" content="nohovernotes">
-    <meta property="pinterest:media" content="${slides[0]?.image || ''}">
-    <meta property="pinterest:description" content="${firstSlideDesc}">
-   
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${firstSlideTitle}">
-    <meta name="twitter:description" content="${firstSlideDesc}">
-    <meta name="twitter:image" content="${slides[0]?.image || ''}">
-   
-    <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "${firstSlideTitle}",
-        "description": "${firstSlideDesc}",
-        "image": "${slides[0]?.image || ''}",
-        "datePublished": "${new Date().toISOString()}"
-    }
-    </script>
-   
-    <title>${firstSlideTitle} - Carousel</title>
+    <meta name="twitter:title" content="${util.sanitizeHTML(firstSlide.title)}">
+    <meta name="twitter:description" content="${util.sanitizeHTML(firstSlide.description)}">
+    <meta name="twitter:image" content="${firstSlide.image}">
+    <title>${util.sanitizeHTML(firstSlide.title)} - Carousel</title>
     <style>
         * {
             margin: 0;
@@ -1267,6 +1377,7 @@
         }
         .slide-content {
             z-index: 2;
+            position: relative;
         }
         .slide-content h2 {
             font-size: 2.5rem;
@@ -1281,6 +1392,8 @@
             opacity: 0.95;
         }
         .slide-cta {
+            display: inline-block;
+            padding: 0.85rem 2rem;
             border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
@@ -1335,13 +1448,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
         }
         .carousel-btn:hover {
             background: rgba(0, 212, 255, 0.4);
             transform: scale(1.1);
-        }
-        .pinterest-pin {
-            display: none;
         }
         .share-buttons {
             position: absolute;
@@ -1371,37 +1482,31 @@
             border-color: rgba(229, 0, 35, 1);
         }
         @media (max-width: 768px) {
-            .share-buttons {
-                flex-direction: column;
-            }
             .carousel-wrapper {
                 aspect-ratio: 9 / 16;
+            }
+            .slide-content h2 {
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Pinterest Hidden Pins -->
-    <div style="display: none;">
-        ${pinterestPins}
-    </div>
-
     <div class="carousel-wrapper">
-        <!-- Share Buttons -->
         <div class="share-buttons">
-            <a href="https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(pinPageUrl)}&media=${encodeURIComponent(slides[0]?.image || '')}&description=${encodeURIComponent(pinDescriptions[0] || '')}"
+            <a href="https://www.pinterest.com/pin/create/button/?url=\${encodeURIComponent(window.location.href)}&description=\${encodeURIComponent('${util.sanitizeHTML(firstSlide.title)}')}"
                class="share-btn"
                title="Bei Pinterest teilen"
                onclick="window.open(this.href, 'pinterest', 'width=750,height=600'); return false;">
                 📌
             </a>
-            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(pinPageUrl)}&text=${encodeURIComponent(firstSlideTitle)}"
+            <a href="https://twitter.com/intent/tweet?url=\${encodeURIComponent(window.location.href)}&text=\${encodeURIComponent('${util.sanitizeHTML(firstSlide.title)}')}"
                class="share-btn"
                title="Bei Twitter teilen"
                onclick="window.open(this.href, 'twitter', 'width=550,height=420'); return false;">
                 𝕏
             </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pinPageUrl)}"
+            <a href="https://www.facebook.com/sharer/sharer.php?u=\${encodeURIComponent(window.location.href)}"
                class="share-btn"
                title="Bei Facebook teilen"
                onclick="window.open(this.href, 'facebook', 'width=550,height=420'); return false;">
@@ -1424,7 +1529,6 @@
     <script>
         let currentIndex = 0;
         const slides = document.querySelectorAll('.carousel-slide');
-        const pinDescriptions = ${JSON.stringify(pinDescriptions)};
 
         function nextSlide() {
             currentIndex = (currentIndex + 1) % slides.length;
@@ -1448,33 +1552,24 @@
             });
             slides[currentIndex].classList.add('active');
             document.querySelectorAll('.dot')[currentIndex].classList.add('active');
-           
-            // Update Pinterest share button with current slide
-            updatePinterestButton();
         }
 
-        function updatePinterestButton() {
-            const pinterestBtn = document.querySelector('a[href*="pinterest.com"]');
-            if (pinterestBtn) {
-                const currentImage = document.querySelector(\`.carousel-slide[\`data-slide-index="\${currentIndex}"]\`);
-                const imageUrl = window.location.href;
-                const description = pinDescriptions[currentIndex] || 'Wunderbar! Sieh dir dieses Carousel an!';
-                pinterestBtn.href = \`https://www.pinterest.com/pin/create/button/?url=\${encodeURIComponent(imageUrl)}&description=\${encodeURIComponent(description)}\`;
-            }
-        }
-
-        // Auto-advance every 8 seconds (optional - entfernen für statische Version)
-        // setInterval(nextSlide, 8000);
-
-        // Initialize Pinterest button
-        updatePinterestButton();
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
     </script>
 </body>
 </html>`;
-        }
+                },
+            };
+        })();
 
-        // Initialize
-        init();
+        // INIT
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
     </script>
 </body>
 </html>
