@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f1a;
+  font-family: Arial;
+  background: #0d0d14;
   color: white;
 }
 
@@ -19,26 +19,26 @@ textarea {
 }
 
 button {
-  padding: 10px 20px;
+  padding: 10px 16px;
   cursor: pointer;
-  margin-bottom: 20px;
 }
 
 #carousel {
   display: grid;
   gap: 12px;
+  margin-top: 20px;
 }
 
 .slide {
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #1c1c2d;
   position: relative;
 }
 
-.slide-content {
+.slide .text {
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .badge {
@@ -51,14 +51,6 @@ button {
   border-radius: 6px;
 }
 
-.slide.hook {
-  border-left: 4px solid #00ffcc;
-}
-
-.slide.value {
-  border-left: 4px solid #4da3ff;
-}
-
-.slide.cta {
-  border-left: 4px solid #ffcc00;
-}
+.slide.hook { border-left: 4px solid #00ffcc; }
+.slide.value { border-left: 4px solid #4da3ff; }
+.slide.cta { border-left: 4px solid #ffcc00; }
